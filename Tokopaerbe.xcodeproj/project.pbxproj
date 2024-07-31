@@ -47,6 +47,8 @@
 		EF780E702C202C540058CDEB /* GifImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF780E6F2C202C540058CDEB /* GifImage.swift */; };
 		EF780E732C202CCD0058CDEB /* FLAnimatedImage in Frameworks */ = {isa = PBXBuildFile; productRef = EF780E722C202CCD0058CDEB /* FLAnimatedImage */; };
 		EF7A228F2C28278000467C34 /* PagingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7A228E2C28278000467C34 /* PagingViewModel.swift */; };
+		EF7B62A02C5B3ED100F87F1F /* CheckoutScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B629F2C5B3ED100F87F1F /* CheckoutScreen.swift */; };
+		EF7B62A22C5B888300F87F1F /* PaymentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B62A12C5B888300F87F1F /* PaymentScreen.swift */; };
 		EF8942BB2C217F8F0088B347 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = EF8942BA2C217F8F0088B347 /* SDWebImageSwiftUI */; };
 		EF8942BD2C21807F0088B347 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8942BC2C21807F0088B347 /* ImageLoader.swift */; };
 		EF8D647E2C11B5480096F3EA /* RefreshBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8D647D2C11B5480096F3EA /* RefreshBody.swift */; };
@@ -135,6 +137,8 @@
 		EF780E6D2C202BF30058CDEB /* splash_screen.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = splash_screen.gif; sourceTree = "<group>"; };
 		EF780E6F2C202C540058CDEB /* GifImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifImage.swift; sourceTree = "<group>"; };
 		EF7A228E2C28278000467C34 /* PagingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagingViewModel.swift; sourceTree = "<group>"; };
+		EF7B629F2C5B3ED100F87F1F /* CheckoutScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutScreen.swift; sourceTree = "<group>"; };
+		EF7B62A12C5B888300F87F1F /* PaymentScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentScreen.swift; sourceTree = "<group>"; };
 		EF8942BC2C21807F0088B347 /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		EF8D647D2C11B5480096F3EA /* RefreshBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshBody.swift; sourceTree = "<group>"; };
 		EF8D647F2C11BA250096F3EA /* RefreshResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshResponse.swift; sourceTree = "<group>"; };
@@ -431,6 +435,8 @@
 			isa = PBXGroup;
 			children = (
 				EFB2141F2C538B82009E9C2B /* CartScreen.swift */,
+				EF7B629F2C5B3ED100F87F1F /* CheckoutScreen.swift */,
+				EF7B62A12C5B888300F87F1F /* PaymentScreen.swift */,
 			);
 			path = CartPayment;
 			sourceTree = "<group>";
@@ -590,6 +596,7 @@
 				EF780E702C202C540058CDEB /* GifImage.swift in Sources */,
 				EF9010782C4E5DC100A86D11 /* ReviewRequest.swift in Sources */,
 				EF5F13F72C0AFFC800E3A3E1 /* ProfileScreen.swift in Sources */,
+				EF7B62A02C5B3ED100F87F1F /* CheckoutScreen.swift in Sources */,
 				EF41D3F02C08A2C5003C65BE /* HexColor.swift in Sources */,
 				EF4F4CD52C189ACC00315B91 /* StoreScreen.swift in Sources */,
 				EF98578F2C0C64F500493661 /* RegisterResponse.swift in Sources */,
@@ -604,6 +611,7 @@
 				EF5F14012C0B017100E3A3E1 /* RegisterScreen.swift in Sources */,
 				EFA13D762C40C9A700681799 /* ProductDetailRequest.swift in Sources */,
 				EF9010762C4E588600A86D11 /* ProductReviewScreen.swift in Sources */,
+				EF7B62A22C5B888300F87F1F /* PaymentScreen.swift in Sources */,
 				EFA13D782C40C9C500681799 /* ProductDetailResponse.swift in Sources */,
 				EF5D84D82C0EBFCE000B7175 /* LoginBody.swift in Sources */,
 				EFB425E52C1016C900383C54 /* LoadingView.swift in Sources */,
