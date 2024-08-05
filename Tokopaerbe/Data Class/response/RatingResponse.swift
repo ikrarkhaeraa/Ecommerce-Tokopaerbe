@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct RatingResponse: Codable {
+    let code: String
+    let message: String
+}

@@ -280,6 +280,12 @@ struct ProductDetailScreen: View {
             }
         }
         
+        if isExpired {
+            NavigationLink(destination: LoginScreen(), isActive: $isExpired) {
+                EmptyView()
+            }
+        }
+        
     }
     
     private func handleAddToCart() {

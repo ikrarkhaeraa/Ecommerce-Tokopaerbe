@@ -22,7 +22,17 @@ struct CheckoutScreen: View {
     @State private var scrollViewSize: CGSize = .zero
     @State private var pembayaranView: CGSize = .zero
     @State private var totalBayarView: CGSize = .zero
+    @State var isExpired: Bool = false
+    @State var showExpiredAlert: Bool = false
+    @State var alertExpiredMessage: String = ""
+    @State var showErrorAlert: Bool = false
+    @State var errorMessageAlert: String = ""
+    @State private var isLoading: Bool = false
     @State private var goToPayment: Bool = false
+    @State private var goToSuccessPayment: Bool = false
+    @State private var imagePayment: Image = Image(uiImage: .addCard)
+    @State private var namePayment: String = "Pilih Pembayaran"
+    @State private var fulfillmentResponse: FulfillmentResponse? = nil
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     var totalPrice: Int {  checkoutCarts.filter { $0.productChecked }
         .reduce(0) { $0 + ($1.productQuantity * $1.productPrice) }}
@@ -95,8 +105,8 @@ struct CheckoutScreen: View {
                     
                     HStack {
                         HStack {
-                            Image(uiImage: .addCard)
-                            Text("Pilih Pembayaran").font(.system(size: 14)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 4)
+                            imagePayment
+                            Text("\(namePayment)").font(.system(size: 14)).foregroundColor(Color(hex: "#49454F")).fontWeight(.medium).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 4)
                             Image(uiImage: .arrowForwardIos)
                         }.frame(maxWidth: .infinity, alignment: .leading).padding()
                     }.background(Color.white)
@@ -125,21 +135,27 @@ struct CheckoutScreen: View {
                         }.frame(maxWidth: .infinity, alignment: .leading)
                         
                         if isChoosePaymentMethod {
-                            Button(action: {
-                                
-                            }, label: {
-                                Text("Bayar")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .padding(.horizontal, 12)
-                                    .background(Color(hex: "#6750A4"))
-                                    .cornerRadius(25)
-                            })
+                            
+                            if isLoading {
+                                CircularLoadingView().padding(.trailing).padding(.trailing)
+                            } else {
+                                Button(action: {
+                                    isLoading = true
+                                    fulfillmentProcess()
+                                }, label: {
+                                    Text("Bayar")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .padding(.horizontal, 12)
+                                        .background(Color(hex: "#6750A4"))
+                                        .cornerRadius(25)
+                                })
+                            }
+                            
+                            
                         } else {
-                            Button(action: {
-                                
-                            }, label: {
+                            Button(action: {}, label: {
                                 Text("Bayar")
                                     .font(.system(size: 14))
                                     .foregroundColor(.white)
@@ -157,12 +173,78 @@ struct CheckoutScreen: View {
                     totalBayarView = $0
                 }
                 
-                NavigationLink(destination: PaymentScreen(), isActive: $goToPayment) {
+                NavigationLink(destination: PaymentScreen(imagePayment: $imagePayment, namePayment: $namePayment, isChoosePaymentMethod: $isChoosePaymentMethod), isActive: $goToPayment) {
+                    EmptyView()
+                }
+                
+                NavigationLink(destination: SuccessPaymentScreen(fulfillmentResponse: $fulfillmentResponse), isActive: $goToSuccessPayment) {
+                    EmptyView()
+                }
+                
+                NavigationLink(destination: LoginScreen(), isActive: $isExpired) {
                     EmptyView()
                 }
                 
             }.navigationBarBackButtonHidden()
+                .alert(isPresented: $showExpiredAlert, content: {
+                Alert(
+                    title: Text("Error"),
+                    message: Text(alertExpiredMessage),
+                    dismissButton: .default(Text("OK"), action: {
+                        isExpired = true
+                    })
+                )
+            })
+                .alert(isPresented: $showErrorAlert, content: {
+                Alert(
+                    title: Text("Error"),
+                    message: Text(errorMessageAlert),
+                    dismissButton: .default(Text("OK"))
+                )
+            })
         }
+    }
+    
+    private func fulfillmentProcess() {
+        
+        var items: [Items] {
+            checkoutCarts.map { cartEntity in
+                Items(
+                    productId: cartEntity.productId!,
+                    variantName: cartEntity.productVariant!,
+                    quantity: cartEntity.productQuantity
+                )
+            }
+        }
+        
+        Log.d("items: \(items)")
+        Log.d("namePayment: \(namePayment)")
+
+        let request = FulfillmentRequst(payment: namePayment, items: items)
+        
+        hitApi(requestBody: request, urlApi: Url.Endpoints.fulfillment, methodApi: "POST", token: UserDefaults().string(forKey: "bearerToken")!, type: "fulfillment", completion: { (success: Bool, responseObject: GeneralResponse<FulfillmentResponse>?) in
+            if success, let responseBackend = responseObject {
+                
+                if responseObject?.code == 200 {
+                    fulfillmentResponse = responseObject!.data
+                    isLoading = false
+                    goToSuccessPayment = true
+                } else if responseObject?.code == 401 {
+                    alertExpiredMessage = responseObject!.message
+                    isLoading = false
+                    showExpiredAlert = true
+                } else {
+                    isLoading = false
+                    showErrorAlert = true
+                    errorMessageAlert = responseObject!.message
+                }
+                
+            } else {
+                isLoading = false
+                showErrorAlert = true
+                errorMessageAlert = "Server tidak dapat melayani permintaan anda"
+            }
+        })
     }
     
     private func calculateScrollViewHeight(proxy: GeometryProxy) -> CGFloat {
@@ -197,79 +279,6 @@ struct CheckoutScreen: View {
         
         // Return the minimum of scrollViewSize.height and remainingHeight
         return min(scrollViewSize.height, remainingHeight)
-    }
-
-    
-    struct ToggleQuantity: View {
-        
-        var iteration: Int
-        var checkoutCarts: FetchedResults<CartEntity>
-        var viewContext: NSManagedObjectContext
-        var deleteCartItemById: (String, String) -> Void
-        
-        var body: some View {
-            HStack {
-                HStack {
-                    Text("-").foregroundColor(Color(hex: "#1D1B20")).padding(.bottom, 2).padding(.leading, 8).onTapGesture {
-                        if checkoutCarts[iteration].productQuantity == 1 {
-                            deleteCartItemById(checkoutCarts[iteration].productId!, checkoutCarts[iteration].productVariant!)
-                        } else {
-                            do {
-                                checkoutCarts[iteration].productQuantity -= 1
-                                try viewContext.save()
-                                print("decrease cart item quantituy")
-                            } catch {
-                                print("failed to decrease cart item quantity")
-                            }
-                        }
-                    }
-                    Text("\(checkoutCarts[iteration].productQuantity)").bold().foregroundColor(Color(hex: "#1D1B20")).font(.system(size: 14)).padding(.horizontal, 8)
-                    Text("+").foregroundColor(Color(hex: "#1D1B20")).padding(.bottom, 2).padding(.trailing, 8).onTapGesture {
-                        if checkoutCarts[iteration].productQuantity < checkoutCarts[iteration].productStock {
-                            do {
-                                checkoutCarts[iteration].productQuantity += 1
-                                try viewContext.save()
-                                print("increase cart item quantituy")
-                            } catch {
-                                print("failed to increase cart item quantity")
-                            }
-                        } else {
-                            print("stock is unavailable")
-                        }
-                    }
-                }
-            }.background(RoundedRectangle(cornerRadius: 100).stroke(lineWidth: 1).foregroundColor(Color(hex: "#79747E")))
-        }
-    }
-    
-    public func deleteCartItemById(id: String, variant: String) {
-        let fetchRequest: NSFetchRequest<CartEntity> = CartEntity.fetchRequest()
-        // Predicate to search for both productId and productVariant
-        let idPredicate = NSPredicate(format: "productId == %@", id)
-        let variantPredicate = NSPredicate(format: "productVariant == %@", variant)
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [idPredicate, variantPredicate])
-
-        do {
-            let products = try viewContext.fetch(fetchRequest)
-            let _ = Log.d("delete cart item: \(products)")
-            guard !products.isEmpty else {
-                print("No product found")
-                return
-            }
-
-            for product in products {
-                viewContext.delete(product)
-            }
-
-            // Save the context to persist the changes
-            try viewContext.save()
-            print("Product deleted successfully")
-            
-
-        } catch {
-            let nsError = error as NSError
-            print("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
     }
     
 }

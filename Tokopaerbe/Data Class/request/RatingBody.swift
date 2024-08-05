@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct RatingBody: Codable {
+    let invoiceId : String
+    let rating : Int
+    let review : String
+}

@@ -1,6 +1,10 @@
 import Foundation
 
+
 func hitApi<responseClass: Codable, requestClass: Codable>(requestBody: requestClass, urlApi: String, methodApi: String, token: String, type: String ,completion: @escaping (Bool, GeneralResponse<responseClass>?) -> Void) {
+    
+    Log.d("cek response class: \(responseClass.self)")
+    Log.d("cek response class: \(GeneralResponse<responseClass>.self)")
     
     var fixedUrl = urlApi
     
@@ -111,6 +115,8 @@ func hitApi<responseClass: Codable, requestClass: Codable>(requestBody: requestC
         
         if methodApi != "GET" {
             let jsonData = try JSONEncoder().encode(requestBody)
+            
+            Log.d("request: \(jsonData)")
             
             if (!fixedUrl.contains("profile")) {
                 request.httpBody = jsonData
