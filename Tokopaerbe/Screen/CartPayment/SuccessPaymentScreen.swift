@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 struct SuccessPaymentScreen: View {
+    
+    @Environment(\.managedObjectContext) var viewContext
     
     @State private var reviewText: String = ""
     @Binding var fulfillmentResponse: FulfillmentResponse?
@@ -143,8 +146,17 @@ struct SuccessPaymentScreen: View {
             NavigationLink(destination: LoginScreen(), isActive: $isExpired) {
                 EmptyView()
             }
+        
             
         }.navigationBarBackButtonHidden()
+            .onAppear {
+                
+                //add notif
+                makingNotification()
+                //save notif to local database
+                saveNotif(id: fulfillmentResponse!.invoiceId, date: fulfillmentResponse!.date)
+                
+            }
             .alert(isPresented: $showExpiredAlert, content: {
             Alert(
                 title: Text("Error"),
@@ -163,9 +175,42 @@ struct SuccessPaymentScreen: View {
         })
     }
     
+    func makingNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "Transaksi Berhasil"
+        content.subtitle = "Transaksi anda dengan ID \(fulfillmentResponse!.invoiceId) sedang di proses oleh penjual, mohon ditunggu untuk update selanjutnya di aplikasi. Sambil menunggu, anda bisa cari barang lain terlebih dahulu"
+        content.sound = UNNotificationSound.default
+        
+        
+        // show this notification five seconds from now
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.5, repeats: false)
+        
+        
+        // choose a random identifier
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        
+        // add our notification request
+        UNUserNotificationCenter.current().add(request)
+    }
+    
+    func saveNotif(id: String, date: String) {
+        let notif = EntityNotif(context: viewContext)
+        notif.productId = id
+        notif.date = date
+        notif.isRead = false
+        
+        do {
+            try viewContext.save()
+            print("notif saved!")
+        } catch {
+            print("whoops \\(error.localizedDescription)")
+        }
+    }
+
+    
     private func postRating(fulfillmentResponse: FulfillmentResponse) {
 
-        let request = RatingBody(invoiceId: fulfillmentResponse.invoiceId, rating: 0, review: reviewText)
+        let request = RatingBody(invoiceId: fulfillmentResponse.invoiceId, rating: totalRating, review: reviewText)
         
         hitApi(requestBody: request, urlApi: Url.Endpoints.rating, methodApi: "POST", token: UserDefaults().string(forKey: "bearerToken")!, type: "rating", completion: { (success: Bool, responseObject: GeneralResponse<RatingResponse>?) in
             if success, let responseBackend = responseObject {

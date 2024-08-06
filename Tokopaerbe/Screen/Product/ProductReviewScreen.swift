@@ -39,28 +39,34 @@ struct ProductReviewScreen: View {
                 ScrollView {
                     VStack {
                         ForEach (reviewResponse!, id: \.self) { data in
-                            
-                            VStack {
-                                HStack {
-                                    ImageLoader(contentMode: .constant("circle36"), urlString: data.userImage)
-                                    VStack {
-                                        Text("\(data.userName)").font(.system(size: 12)).bold().foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
-                                        HStack {
-                                            ForEach(1...data.userRating, id: \.self) { i in
-                                                if (i > 1) {
-                                                    Image(uiImage: .star).padding(.leading, -8)
-                                                } else {
-                                                    Image(uiImage: .star)
+                            if data.userRating != 0 && data.userReview != "" {
+                                VStack {
+                                    HStack {
+                                        if data.userImage.isEmpty {
+                                            Image(uiImage: .imageUserDefault)
+                                        } else {
+                                            ImageLoader(contentMode: .constant("circle36"), urlString: data.userImage)
+                                        }
+                                        
+                                        VStack {
+                                            Text("\(data.userName)").font(.system(size: 12)).bold().foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                                            HStack {
+                                                ForEach(1...data.userRating, id: \.self) { i in
+                                                    if (i > 1) {
+                                                        Image(uiImage: .star).padding(.leading, -8)
+                                                    } else {
+                                                        Image(uiImage: .star)
+                                                    }
                                                 }
-                                            }
-                                        }.frame(maxWidth: .infinity, alignment: .leading)
-                                    }
-                                }.padding(.top)
+                                            }.frame(maxWidth: .infinity, alignment: .leading)
+                                        }
+                                    }.padding(.top)
+                                    
+                                    Text("\(data.userReview)").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom).padding(.top, 4)
+                                }.padding(.leading)
                                 
-                                Text("\(data.userReview)").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom).padding(.top, 4)
-                            }.padding(.leading)
-                            
-                            Divider()
+                                Divider()
+                            }
                         }
                     }
                 }

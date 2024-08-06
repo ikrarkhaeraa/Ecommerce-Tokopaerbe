@@ -36,6 +36,14 @@ struct SplashScreen: View {
                 
             }.onAppear {
                 
+                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                    if success {
+                        print("Permission approved!")
+                    } else if let error = error {
+                        print(error.localizedDescription)
+                    }
+                }
+                
                 if case .productDetail = deepLinkManager.destination {
                     deepLinkManager.destination = .unknown
                 }

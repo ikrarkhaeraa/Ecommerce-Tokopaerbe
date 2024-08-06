@@ -35,6 +35,15 @@ struct MainActivity: View {
     private let bottomNavTitle = ["Beranda", "Toko", "Favorit", "Transaksi"]
     
     @AppStorage("username") private var username: String = ""
+    
+    @FetchRequest(sortDescriptors: []) private var carts: FetchedResults<CartEntity>
+    @FetchRequest(sortDescriptors: []) private var favorites: FetchedResults<FavoriteEntity>
+    @FetchRequest(
+        entity: EntityNotif.entity(),
+        sortDescriptors: [],
+        predicate: NSPredicate(format: "isRead == false")
+    ) var notifications: FetchedResults<EntityNotif>
+    
     @Binding var page: Int
     @State private var temp = ""
     @State private var temp2 = ""
@@ -56,6 +65,7 @@ struct MainActivity: View {
     @State var goToDetailProduct: Bool = false
     @State var chosenProduct: Product = Product(productId : "", productName : "", productPrice : 0, image : "", brand : "", store : "", sale : 0, productRating: 0.0)
     @State var goToCartScreen: Bool = false
+    @State var goToNotifScreen: Bool = false
 
     @StateObject private var searchVM = SearchViewModel()
     @StateObject private var bottomSheetVM = BottomSheetViewModel()
@@ -72,10 +82,14 @@ struct MainActivity: View {
                     Text("Hello, \(username)").font(.system(size: 22)).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading).padding(.leading, 10)
                     
                     HStack {
-                        Image(uiImage: UIImage.notifications).padding(.trailing, 14)
+                        Image(uiImage: UIImage.notifications).padding(.trailing, 14).onTapGesture {
+                            goToNotifScreen = true
+                        }.overlay(NotificationCountView(value: .constant(notifications.count)))
+                        
                         Image(uiImage: UIImage.shoppingCart).padding(.trailing, 14).onTapGesture {
                             goToCartScreen = true
-                        }
+                        }.overlay(NotificationCountView(value: .constant(carts.count)))
+                        
                         Image(uiImage: UIImage.menu)
                     }.padding(.trailing, 20)
                     
@@ -102,10 +116,14 @@ struct MainActivity: View {
                                 if (page == num) {
                                     Image(uiImage: UIImage.iconContainer)
                                 }
-                                Image(uiImage: bottomNavIcon[num]).frame(maxWidth: .infinity).onTapGesture {
-                                    print("page : \(page) \n num : \(num)")
-                                    page = num
-                                }
+                                
+                                ZStack {
+                                    Image(uiImage: bottomNavIcon[num]).onTapGesture {
+                                        print("page : \(page) \n num : \(num)")
+                                        page = num
+                                    }.overlay(num == 2 ? NotificationCountView(value: .constant(favorites.count)) : nil)
+                                }.frame(maxWidth: .infinity)
+                                
                             }
                             
                             if (page == num) {
@@ -415,6 +433,11 @@ struct MainActivity: View {
                     EmptyView()
                 }
             }
+            
+            NavigationLink(destination: NotificationScreen(), isActive: $goToNotifScreen) {
+                EmptyView()
+            }
+            
         }
     
     }

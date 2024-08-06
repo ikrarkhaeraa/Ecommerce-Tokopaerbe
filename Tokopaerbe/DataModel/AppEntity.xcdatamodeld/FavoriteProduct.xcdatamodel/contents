@@ -21,4 +21,9 @@
         <attribute name="productStore" optional="YES" attributeType="String"/>
         <attribute name="productVariant" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="EntityNotif" representedClassName="EntityNotif" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="String"/>
+        <attribute name="isRead" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="productId" optional="YES" attributeType="String"/>
+    </entity>
 </model>

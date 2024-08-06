@@ -13,6 +13,10 @@
 		EF1DD7222C2A9FC9000A6312 /* SearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1DD7212C2A9FC9000A6312 /* SearchResponse.swift */; };
 		EF1DD7252C2AA017000A6312 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1DD7242C2AA017000A6312 /* SearchViewModel.swift */; };
 		EF2265852C3E6A150077BBEE /* WrappingHStack in Frameworks */ = {isa = PBXBuildFile; productRef = EF2265842C3E6A150077BBEE /* WrappingHStack */; };
+		EF2D04062C62050D004000BB /* NotivicationCountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2D04052C62050D004000BB /* NotivicationCountView.swift */; };
+		EF2D04092C6220BA004000BB /* EntityNotif+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2D04072C6220BA004000BB /* EntityNotif+CoreDataClass.swift */; };
+		EF2D040A2C6220BA004000BB /* EntityNotif+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2D04082C6220BA004000BB /* EntityNotif+CoreDataProperties.swift */; };
+		EF2D040D2C62225D004000BB /* NotificationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2D040C2C62225D004000BB /* NotificationScreen.swift */; };
 		EF391D3B2C075C130026DE64 /* TokopaerbeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF391D3A2C075C130026DE64 /* TokopaerbeApp.swift */; };
 		EF391D4C2C075C140026DE64 /* TokopaerbeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF391D4B2C075C140026DE64 /* TokopaerbeTests.swift */; };
 		EF391D562C075C150026DE64 /* TokopaerbeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF391D552C075C150026DE64 /* TokopaerbeUITests.swift */; };
@@ -109,6 +113,10 @@
 		EF1DD71F2C2A9F4C000A6312 /* SearchQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQuery.swift; sourceTree = "<group>"; };
 		EF1DD7212C2A9FC9000A6312 /* SearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResponse.swift; sourceTree = "<group>"; };
 		EF1DD7242C2AA017000A6312 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		EF2D04052C62050D004000BB /* NotivicationCountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotivicationCountView.swift; sourceTree = "<group>"; };
+		EF2D04072C6220BA004000BB /* EntityNotif+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityNotif+CoreDataClass.swift"; sourceTree = "<group>"; };
+		EF2D04082C6220BA004000BB /* EntityNotif+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityNotif+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		EF2D040C2C62225D004000BB /* NotificationScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScreen.swift; sourceTree = "<group>"; };
 		EF391D372C075C130026DE64 /* Tokopaerbe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tokopaerbe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF391D3A2C075C130026DE64 /* TokopaerbeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokopaerbeApp.swift; sourceTree = "<group>"; };
 		EF391D3E2C075C140026DE64 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -223,6 +231,15 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		EF2D040B2C6220C9004000BB /* Notif */ = {
+			isa = PBXGroup;
+			children = (
+				EF2D04072C6220BA004000BB /* EntityNotif+CoreDataClass.swift */,
+				EF2D04082C6220BA004000BB /* EntityNotif+CoreDataProperties.swift */,
+			);
+			path = Notif;
+			sourceTree = "<group>";
+		};
 		EF391D2E2C075C130026DE64 = {
 			isa = PBXGroup;
 			children = (
@@ -316,6 +333,7 @@
 				EF632B3A2C29629A00F0F04A /* CircularLoadingView.swift */,
 				EFFBBA7A2C3F78C000A94DDE /* PullToRefreshView.swift */,
 				EF0A65F52C5099510088DE3C /* DeepLinkManager.swift */,
+				EF2D04052C62050D004000BB /* NotivicationCountView.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -339,6 +357,7 @@
 				EF4F4CD42C189ACC00315B91 /* StoreScreen.swift */,
 				EF4F4CD72C189AE400315B91 /* FavoriteScreen.swift */,
 				EF4F4CD92C189AF100315B91 /* TransactionScreen.swift */,
+				EF2D040C2C62225D004000BB /* NotificationScreen.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -354,6 +373,7 @@
 		EF6184792C51EC3400D28EEE /* Entity */ = {
 			isa = PBXGroup;
 			children = (
+				EF2D040B2C6220C9004000BB /* Notif */,
 				EFB214162C53874D009E9C2B /* Cart */,
 				EF61847A2C51ECAE00D28EEE /* Favorite */,
 			);
@@ -636,6 +656,7 @@
 				EFA13D762C40C9A700681799 /* ProductDetailRequest.swift in Sources */,
 				EFAEE1392C60B9BC00732D43 /* RatingBody.swift in Sources */,
 				EF9010762C4E588600A86D11 /* ProductReviewScreen.swift in Sources */,
+				EF2D040D2C62225D004000BB /* NotificationScreen.swift in Sources */,
 				EF7B62A22C5B888300F87F1F /* PaymentScreen.swift in Sources */,
 				EFA13D782C40C9C500681799 /* ProductDetailResponse.swift in Sources */,
 				EF5D84D82C0EBFCE000B7175 /* LoginBody.swift in Sources */,
@@ -649,6 +670,7 @@
 				EFFBBA7D2C3F89E700A94DDE /* ProductDetailScreen.swift in Sources */,
 				EFE626A12C5C8C83004E0AFA /* FulfillmentResponse.swift in Sources */,
 				EFE073372C1D90A300E3706C /* SearchBar.swift in Sources */,
+				EF2D04062C62050D004000BB /* NotivicationCountView.swift in Sources */,
 				EFB425E72C105C2100383C54 /* ProfileResponse.swift in Sources */,
 				EF9857882C0C63DA00493661 /* RegisterBody.swift in Sources */,
 				EFE0733B2C1DA88C00E3706C /* ProductsResponse.swift in Sources */,
@@ -656,6 +678,8 @@
 				EF398A422C5779E700AB7795 /* EntityCart+CoreDataProperties.swift in Sources */,
 				EF632B3B2C29629A00F0F04A /* CircularLoadingView.swift in Sources */,
 				EF9857912C0C657D00493661 /* GeneralResponse.swift in Sources */,
+				EF2D04092C6220BA004000BB /* EntityNotif+CoreDataClass.swift in Sources */,
+				EF2D040A2C6220BA004000BB /* EntityNotif+CoreDataProperties.swift in Sources */,
 				EFE073392C1DA82800E3706C /* ProductsQuery.swift in Sources */,
 				EFB214202C538B82009E9C2B /* CartScreen.swift in Sources */,
 				EF7A228F2C28278000467C34 /* PagingViewModel.swift in Sources */,

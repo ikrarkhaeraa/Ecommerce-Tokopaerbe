@@ -32,6 +32,7 @@ struct ProductDetailScreen: View {
     @State var choosenVariantString: String = ""
     @State var showErrorState: Bool = false
     @State var errorTitle: String = ""
+    @State var goToCheckout: Bool = false
     
     // MARK: Core data variables
         @Environment(\.managedObjectContext) var viewContext
@@ -219,7 +220,7 @@ struct ProductDetailScreen: View {
                     
                     HStack {
                         Button(action: {
-                            
+                            goToCheckout = true
                         }, label: {
                             Text("Beli Langsung")
                                 .foregroundColor(Color(hex: "#6750A4"))
@@ -282,6 +283,12 @@ struct ProductDetailScreen: View {
         
         if isExpired {
             NavigationLink(destination: LoginScreen(), isActive: $isExpired) {
+                EmptyView()
+            }
+        }
+        
+        if goToCheckout {
+            NavigationLink(destination: CheckoutScreen(itemfromDetail: productDetailResponse, chosenVariantFromDetail: choosenVariantString, priceFromDetail: productDetailResponse!.productPrice + choosenVariantPrice), isActive: $goToCheckout) {
                 EmptyView()
             }
         }

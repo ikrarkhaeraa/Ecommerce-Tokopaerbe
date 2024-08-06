@@ -16,6 +16,9 @@ struct CheckoutScreen: View {
         sortDescriptors: [],
         predicate: NSPredicate(format: "productChecked == true")
     ) var checkoutCarts: FetchedResults<CartEntity>
+    @State var itemfromDetail: ProductDetailResponse? = nil
+    @State var chosenVariantFromDetail: String = ""
+    @State var priceFromDetail: Int = 0
     @Environment(\.managedObjectContext) var viewContext
     @State var isChoosePaymentMethod: Bool = false
     @State private var appBarViewSize: CGSize = .zero
@@ -62,26 +65,26 @@ struct CheckoutScreen: View {
                 
             
                 ScrollView {
-                    ForEach(checkoutCarts.indices, id: \.self) { i in
-                        
+                    
+                    if itemfromDetail != nil {
                         HStack {
-                            ImageLoader(contentMode: .constant("fit"), urlString: checkoutCarts[i].productImage!).frame(maxWidth: 80, maxHeight: 80).background(RoundedRectangle(cornerRadius: 8).foregroundColor(.white))
+                            ImageLoader(contentMode: .constant("fit"), urlString: (itemfromDetail!.image[0])).frame(maxWidth: 80, maxHeight: 80).background(RoundedRectangle(cornerRadius: 8).foregroundColor(.white))
                             
                             VStack {
-                                Text("\(checkoutCarts[i].productName!)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
+                                Text("\(itemfromDetail!.productName)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                     .fixedSize(horizontal: false, vertical: true)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
-                                Text("\(checkoutCarts[i].productVariant!)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                Text("\(chosenVariantFromDetail)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
-                                Text("Stok \(checkoutCarts[i].productStock)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                Text("Stok \(itemfromDetail!.stock)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
                                 HStack {
-                                    Text("Stok \(checkoutCarts[i].productPrice)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
+                                    Text("Stok \(priceFromDetail)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
                                         .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
                                     
                                 }.frame(maxWidth: .infinity)
@@ -89,11 +92,46 @@ struct CheckoutScreen: View {
                                 
                             }.padding(.horizontal, 2).frame(maxWidth: .infinity, alignment: .leading)
                             
-                        }.padding()
+                        }.padding().getSize {scrollViewSize = $0}
                         
                         Divider()
                         
-                    }.getSize {scrollViewSize = $0}
+                    } else {
+                        ForEach(checkoutCarts.indices, id: \.self) { i in
+                            
+                            HStack {
+                                ImageLoader(contentMode: .constant("fit"), urlString: checkoutCarts[i].productImage!).frame(maxWidth: 80, maxHeight: 80).background(RoundedRectangle(cornerRadius: 8).foregroundColor(.white))
+                                
+                                VStack {
+                                    Text("\(checkoutCarts[i].productName!)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    
+                                    Text("\(checkoutCarts[i].productVariant!)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    
+                                    Text("Stok \(checkoutCarts[i].productStock)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    
+                                    HStack {
+                                        Text("Stok \(checkoutCarts[i].productPrice)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
+                                            .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
+                                        
+                                    }.frame(maxWidth: .infinity)
+                                    
+                                    
+                                }.padding(.horizontal, 2).frame(maxWidth: .infinity, alignment: .leading)
+                                
+                            }.padding()
+                            
+                            Divider()
+                            
+                        }.getSize {scrollViewSize = $0}
+                    }
+                    
+
                 }
                 .frame(maxHeight: calculateScrollViewHeight(proxy: proxy))
 
@@ -131,7 +169,12 @@ struct CheckoutScreen: View {
                         VStack {
                             Text("Total Bayar").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                             
-                            Text("Rp\(totalPrice)").font(.system(size: 16)).bold().foregroundColor(Color(hex: "#49454F")).padding(.top, 2).frame(maxWidth: .infinity, alignment: .leading)
+                            if itemfromDetail != nil {
+                                Text("Rp\(priceFromDetail)").font(.system(size: 16)).bold().foregroundColor(Color(hex: "#49454F")).padding(.top, 2).frame(maxWidth: .infinity, alignment: .leading)
+                            } else {
+                                Text("Rp\(totalPrice)").font(.system(size: 16)).bold().foregroundColor(Color(hex: "#49454F")).padding(.top, 2).frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            
                         }.frame(maxWidth: .infinity, alignment: .leading)
                         
                         if isChoosePaymentMethod {
@@ -209,16 +252,23 @@ struct CheckoutScreen: View {
         
         var items: [Items] {
             checkoutCarts.map { cartEntity in
-                Items(
-                    productId: cartEntity.productId!,
-                    variantName: cartEntity.productVariant!,
-                    quantity: cartEntity.productQuantity
-                )
+                
+                if itemfromDetail != nil {
+                    Items(
+                        productId: itemfromDetail!.productId,
+                        variantName: chosenVariantFromDetail,
+                        quantity: 1
+                    )
+                } else {
+                    Items(
+                        productId: cartEntity.productId!,
+                        variantName: cartEntity.productVariant!,
+                        quantity: cartEntity.productQuantity
+                    )
+                }
+        
             }
         }
-        
-        Log.d("items: \(items)")
-        Log.d("namePayment: \(namePayment)")
 
         let request = FulfillmentRequst(payment: namePayment, items: items)
         
