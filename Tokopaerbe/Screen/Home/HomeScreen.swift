@@ -11,63 +11,73 @@ struct HomeScreen: View {
     
     @StateObject private var settings = AppSettings()
     
-    @State private var isEN = false
-    @State private var isDark = false
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
     
     @Binding var isLogout: Bool
     
     
     var body: some View {
         NavigationView {
-            VStack {
-                LottieView(animationFileName: "lottie", loopMode: .loop).padding(.leading, 100).padding(.top, -200)
-                
-                
-                VStack {
+            GeometryReader { proxy in
+                ZStack {
                     
-                    Button(action: {
-                        Log.d("button keluar")
-                        UserDefaults.standard.setValue(false, forKey: "isRegistered")
-                        UserDefaults.standard.setValue(true, forKey: "isAlreadyOnboarding")
-                        UserDefaults.standard.setValue("", forKey: "username")
-                        
-                        isLogout = true
-                        
-                    }, label: {
-                        Text("Keluar")
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding()
-                            .background(Color(hex: "#6750A4"))
-                            .cornerRadius(25)
-                    })
+                    LottieView(animationFileName: "lottie", loopMode: .loop).frame(maxWidth: .infinity).padding(.horizontal, 50).padding(.top, -200)
                     
                     VStack {
-                        HStack {
-                            Spacer()
-                            Spacer()
-                            Spacer().overlay(Text("ID"))
-                            Toggle("", isOn: $isEN).labelsHidden().onTapGesture {
-                                if isEN == true {
-                                    
-                                } else {
-                                    
-                                }
-                            }
-                            Spacer().overlay(Text("EN"))
-                            Spacer()
-                            Spacer()
-                        }
+                        Button(action: {
+                            UserDefaults.standard.setValue(false, forKey: "isRegistered")
+                            UserDefaults.standard.setValue(true, forKey: "isAlreadyOnboarding")
+                            UserDefaults.standard.setValue("", forKey: "username")
+                            
+                            isLogout = true
+                            
+                        }, label: {
+                            Text(isEN ? "Logout" : "Keluar")
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 16)
+                                .padding()
+                                .background(Color(hex: "#6750A4"))
+                                .cornerRadius(25)
+                        })
                         
-                        HStack {
-                            Spacer()
-                            Spacer().overlay(Text("Terang"))
-                            Toggle("", isOn: $isDark).labelsHidden()
-                            Spacer().overlay(Text("Gelap"))
-                            Spacer()
-                        }.padding(.top, 16)
-                    }.padding(.top, 28)
-                }.padding(.top, -300)
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Spacer()
+                                Spacer().overlay(Text("ID"))
+                                Toggle("", isOn: $isEN).labelsHidden()
+                                Spacer().overlay(Text("EN"))
+                                Spacer()
+                                Spacer()
+                            }
+                            
+                            HStack {
+                                Spacer()
+                                Spacer().overlay(Text(isEN ? "Light" :"Terang"))
+                                Toggle("", isOn: $isDark).labelsHidden()
+                                Spacer().overlay(Text(isEN ? "Dark" :"Gelap"))
+                                Spacer()
+                            }.padding(.top, 16)
+                        }.padding(.top, 28)
+                    }.padding(.bottom, -200)
+                    
+                    
+                    if isDark {
+                        let _ = UserDefaults().set(true, forKey: "isDark")
+                        
+                    } else {
+                        let _ = UserDefaults().set(false, forKey: "isDark")
+                    }
+                    
+                    if isEN {
+                        let _ = UserDefaults().set(true, forKey: "isEN")
+                        
+                    } else {
+                        let _ = UserDefaults().set(false, forKey: "isEN")
+                    }
+                    
+                }.frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
     }

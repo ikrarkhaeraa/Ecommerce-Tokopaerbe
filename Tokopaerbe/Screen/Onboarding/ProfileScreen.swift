@@ -27,6 +27,10 @@ struct ProfileScreen: View {
 
 
 struct ProfileActivitiy: View {
+    
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @State private var name: String = ""
     @State var alertMessage: String = ""
     @State var isLoading: Bool = false
@@ -84,19 +88,19 @@ struct ProfileActivitiy: View {
                 
                 
                 ZStack(alignment: .leading) {
-                    TextField("Masukkan Nama Anda", text: $name)
+                    TextField(isEN ? "Input your name" :"Masukkan Nama Anda", text: $name)
                         .padding(24)
-                        .background(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 2))
+                        .background(RoundedRectangle(cornerRadius: 8).stroke(isDark ? .white :Color.black, lineWidth: 2))
                         .cornerRadius(10)
                         .padding()
                         .font(.system(size: 16))
                         .autocapitalization(.none)
                     
-                    Rectangle().fill(Color.white).overlay(
-                        Text("Name")
+                    Rectangle().fill(isDark ? .black :Color.white).overlay(
+                        Text(isEN ? "Name" : "Nama")
                             .font(.system(size: 16))
-                            .foregroundColor(Color(hex: "#6750A4"))
-                            .background(Color.white)
+                            .foregroundColor(isDark ? .white :Color(hex: "#6750A4"))
+                            .background(isDark ? .black :Color.white)
                     ).frame(width: 50, height: 16)
                         .padding(.bottom, 70)
                         .padding(.leading, 40)
@@ -105,7 +109,7 @@ struct ProfileActivitiy: View {
                 
                 if name.isEmpty {
                     Button(action: {}) {
-                        Text("Selesai")
+                        Text(isEN ? "Done" :"Selesai")
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -163,14 +167,14 @@ struct ProfileActivitiy: View {
                             } else {
                                 isLoading = false
                                 showAlert = true
-                                alertMessage = "Server tidak dapat melayani permintaan anda"
+                                alertMessage = isEN ? "Server cannot handle your request" :"Server tidak dapat melayani permintaan anda"
                             }
                         }
                         
                        
 
                     }) {
-                        Text("Selesai")
+                        Text(isEN ? "Done" :"Selesai")
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -193,11 +197,11 @@ struct ProfileActivitiy: View {
                 
                 VStack {
                     Group {
-                        Text("Dengan masuk disini, kamu menyetujui ").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")) +
-                        Text("Syarat & Ketentuan ").font(.system(size: 12)).foregroundColor(Color(hex: "#6750A4")) +
-                        Text("serta ").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")) +
-                        Text("Kebijakan Privasi ").font(.system(size: 12)).foregroundColor(Color(hex: "#6750A4")) +
-                        Text("TokoPhincon.").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F"))
+                        Text(isEN ? "By entering here, you agree " : "Dengan masuk disini, kamu menyetujui ").font(.system(size: 12)).foregroundColor(isDark ? .white : Color(hex: "#49454F")) +
+                        Text(isEN ? "Terms $ Condition " : "Syarat & Ketentuan ").font(.system(size: 12)).foregroundColor(Color(hex: "#6750A4")) +
+                        Text(isEN ? "and " : "serta ").font(.system(size: 12)).foregroundColor(isDark ? .white : Color(hex: "#49454F")) +
+                        Text(isEN ? "Privacy Policy " : "Kebijakan Privasi ").font(.system(size: 12)).foregroundColor(Color(hex: "#6750A4")) +
+                        Text("TokoPhincon.").font(.system(size: 12)).foregroundColor(isDark ? .white : Color(hex: "#49454F"))
                     }
                     .multilineTextAlignment(.center)
                 }.padding(.horizontal, 20)
@@ -242,6 +246,10 @@ struct ProfileActivitiy: View {
 
 
 struct PopupView: View {
+    
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @Binding var isPresented: Bool
     @Binding var dismissOnTapOutside: Bool
     @Binding var selectedImage: UIImage?
@@ -262,12 +270,12 @@ struct PopupView: View {
 
             VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
-                    Text("Pilih Gambar").fontWeight(.bold).font(.system(size: 24.0)).padding(.vertical, 8)
-                    Text("Kamera").padding(.top, 24).onTapGesture {
+                    Text(isEN ? "Choose Image" :"Pilih Gambar").fontWeight(.bold).font(.system(size: 24.0)).padding(.vertical, 8)
+                    Text(isEN ? "Camera" :"Kamera").padding(.top, 24).onTapGesture {
                         showCamera = true
                         Log.d("Show Camera = \(showCamera)")
                     }
-                    Text("Galeri").padding(.vertical, 16).onTapGesture {
+                    Text(isEN ? "Gallery" :"Galeri").padding(.vertical, 16).onTapGesture {
                         showImagePicker = true
                         Log.d("Show Gallery = \(showImagePicker)")
                     }

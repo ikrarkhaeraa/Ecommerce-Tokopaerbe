@@ -25,5 +25,6 @@
         <attribute name="date" optional="YES" attributeType="String"/>
         <attribute name="isRead" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="productId" optional="YES" attributeType="String"/>
+        <attribute name="time" optional="YES" attributeType="String"/>
     </entity>
 </model>

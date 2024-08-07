@@ -250,27 +250,29 @@ struct CheckoutScreen: View {
     
     private func fulfillmentProcess() {
         
-        var items: [Items] {
-            checkoutCarts.map { cartEntity in
-                
-                if itemfromDetail != nil {
-                    Items(
-                        productId: itemfromDetail!.productId,
-                        variantName: chosenVariantFromDetail,
-                        quantity: 1
-                    )
-                } else {
-                    Items(
-                        productId: cartEntity.productId!,
-                        variantName: cartEntity.productVariant!,
-                        quantity: cartEntity.productQuantity
-                    )
-                }
+        var items: [Items]? = nil
         
+        if checkoutCarts.isEmpty {
+           items =  [Items(
+                productId: itemfromDetail!.productId,
+                variantName: chosenVariantFromDetail,
+                quantity: 1
+            )]
+        } else {
+            items = checkoutCarts.map { cartEntity in
+                Items(
+                    productId: cartEntity.productId!,
+                    variantName: cartEntity.productVariant!,
+                    quantity: cartEntity.productQuantity
+                )
             }
         }
+        
+        
+            
 
-        let request = FulfillmentRequst(payment: namePayment, items: items)
+
+        let request = FulfillmentRequst(payment: namePayment, items: items!)
         
         hitApi(requestBody: request, urlApi: Url.Endpoints.fulfillment, methodApi: "POST", token: UserDefaults().string(forKey: "bearerToken")!, type: "fulfillment", completion: { (success: Bool, responseObject: GeneralResponse<FulfillmentResponse>?) in
             if success, let responseBackend = responseObject {

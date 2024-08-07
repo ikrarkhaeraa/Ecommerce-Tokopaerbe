@@ -33,8 +33,11 @@ struct MainScreen: View {
 struct MainActivity: View {
     private let bottomNavIcon = [UIImage.home, UIImage.store, UIImage.favoriteFull, UIImage.listAlt]
     private let bottomNavTitle = ["Beranda", "Toko", "Favorit", "Transaksi"]
+    private let bottomNavTitleEN = ["Home", "Store", "Favorite", "Transaction"]
     
     @AppStorage("username") private var username: String = ""
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
     
     @FetchRequest(sortDescriptors: []) private var carts: FetchedResults<CartEntity>
     @FetchRequest(sortDescriptors: []) private var favorites: FetchedResults<FavoriteEntity>
@@ -78,19 +81,31 @@ struct MainActivity: View {
             VStack {
                 
                 HStack {
-                    Image(uiImage: UIImage(named: "icon_person")!).padding(.leading, 20)
-                    Text("Hello, \(username)").font(.system(size: 22)).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading).padding(.leading, 10)
+                    Image(uiImage: UIImage(named: "icon_person")!)
+                        .renderingMode(isDark ? .template : .original)
+                        .foregroundColor(isDark ? .white : nil)
+                        .padding(.leading, 20)
+                    Text(isEN ? "Hello, \(username)" : "Halo, \(username)").font(.system(size: 22)).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading).padding(.leading, 10)
                     
                     HStack {
-                        Image(uiImage: UIImage.notifications).padding(.trailing, 14).onTapGesture {
+                        Image(uiImage: UIImage.notifications)
+                            .renderingMode(isDark ? .template : .original)
+                            .foregroundColor(isDark ? .white : nil)
+                            .padding(.trailing, 14)
+                            .onTapGesture {
                             goToNotifScreen = true
                         }.overlay(NotificationCountView(value: .constant(notifications.count)))
                         
-                        Image(uiImage: UIImage.shoppingCart).padding(.trailing, 14).onTapGesture {
+                        Image(uiImage: UIImage.shoppingCart)
+                            .renderingMode(isDark ? .template : .original)
+                            .foregroundColor(isDark ? .white : nil)
+                            .padding(.trailing, 14).onTapGesture {
                             goToCartScreen = true
                         }.overlay(NotificationCountView(value: .constant(carts.count)))
                         
                         Image(uiImage: UIImage.menu)
+                            .renderingMode(isDark ? .template : .original)
+                            .foregroundColor(isDark ? .white : nil)
                     }.padding(.trailing, 20)
                     
                 }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 12)
@@ -115,10 +130,15 @@ struct MainActivity: View {
                             ZStack {
                                 if (page == num) {
                                     Image(uiImage: UIImage.iconContainer)
+                                        .renderingMode(isDark ? .template : .original)
+                                        .foregroundColor(isDark ? Color(hex: "#6750A4") : nil)
                                 }
                                 
                                 ZStack {
-                                    Image(uiImage: bottomNavIcon[num]).onTapGesture {
+                                    Image(uiImage: bottomNavIcon[num])
+                                        .renderingMode(isDark ? .template : .original)
+                                        .foregroundColor(isDark ? .white : nil)
+                                        .onTapGesture {
                                         print("page : \(page) \n num : \(num)")
                                         page = num
                                     }.overlay(num == 2 ? NotificationCountView(value: .constant(favorites.count)) : nil)
@@ -127,12 +147,12 @@ struct MainActivity: View {
                             }
                             
                             if (page == num) {
-                                Text("\(bottomNavTitle[num])").font(.system(size: 14)).bold().onTapGesture {
+                                Text(isEN ? "\(bottomNavTitleEN[num])" : "\(bottomNavTitle[num])").font(.system(size: 14)).bold().onTapGesture {
                                     print("page : \(page) \n num : \(num)")
                                     page = num
                                 }
                             } else {
-                                Text("\(bottomNavTitle[num])").font(.system(size: 14)).onTapGesture {
+                                Text(isEN ? "\(bottomNavTitleEN[num])" : "\(bottomNavTitle[num])").font(.system(size: 14)).onTapGesture {
                                     print("page : \(page) \n num : \(num)")
                                     page = num
                                 }

@@ -7,10 +7,12 @@
 
 import SwiftUI
 import UserNotifications
+import CoreData
 
 struct SuccessPaymentScreen: View {
     
     @Environment(\.managedObjectContext) var viewContext
+    @FetchRequest(sortDescriptors: []) private var carts: FetchedResults<CartEntity>
     
     @State private var reviewText: String = ""
     @Binding var fulfillmentResponse: FulfillmentResponse?
@@ -151,10 +153,13 @@ struct SuccessPaymentScreen: View {
         }.navigationBarBackButtonHidden()
             .onAppear {
                 
+                //delete product bought
+                deleteProduct()
+                
                 //add notif
                 makingNotification()
                 //save notif to local database
-                saveNotif(id: fulfillmentResponse!.invoiceId, date: fulfillmentResponse!.date)
+                saveNotif(id: fulfillmentResponse!.invoiceId, date: fulfillmentResponse!.date, time: fulfillmentResponse!.time)
                 
             }
             .alert(isPresented: $showExpiredAlert, content: {
@@ -175,6 +180,33 @@ struct SuccessPaymentScreen: View {
         })
     }
     
+    private func deleteProduct() {
+        
+            let fetchRequest: NSFetchRequest<CartEntity> = CartEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "productChecked == true")
+
+            do {
+                let products = try viewContext.fetch(fetchRequest)
+                let _ = Log.d("delete product: \(products)")
+                guard !products.isEmpty else {
+                    print("No product found with checked true")
+                    return
+                }
+
+                for product in products {
+                    viewContext.delete(product)
+                }
+
+                // Save the context to persist the changes
+                try viewContext.save()
+                print("Product deleted successfully")
+
+            } catch {
+                let nsError = error as NSError
+                print("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    
     func makingNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Transaksi Berhasil"
@@ -193,10 +225,11 @@ struct SuccessPaymentScreen: View {
         UNUserNotificationCenter.current().add(request)
     }
     
-    func saveNotif(id: String, date: String) {
+    func saveNotif(id: String, date: String, time: String) {
         let notif = EntityNotif(context: viewContext)
         notif.productId = id
         notif.date = date
+        notif.time = time
         notif.isRead = false
         
         do {

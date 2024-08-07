@@ -16,6 +16,8 @@ struct TokopaerbeApp: App {
     @StateObject private var deepLinkManager = DeepLinkManager()
     // MARK: Core data
     @StateObject private var manager: DataManager = DataManager()
+    // Observe the 'isDark' value using @AppStorage
+    @AppStorage("isDark") private var isDark: Bool = false
     
     var body: some Scene {
 
@@ -32,6 +34,8 @@ struct TokopaerbeApp: App {
                     let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true)
                     print("\(path)")
                 }
+                // Listen for changes in the isDark value and update the color scheme
+                .preferredColorScheme(isDark ? .dark : .light)
         }
     }
 }

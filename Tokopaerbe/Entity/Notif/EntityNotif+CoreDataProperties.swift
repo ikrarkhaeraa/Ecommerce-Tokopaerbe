@@ -18,6 +18,7 @@ extension EntityNotif {
 
     @NSManaged public var productId: String?
     @NSManaged public var date: String?
+    @NSManaged public var time: String?
     @NSManaged public var isRead: Bool
 
 }

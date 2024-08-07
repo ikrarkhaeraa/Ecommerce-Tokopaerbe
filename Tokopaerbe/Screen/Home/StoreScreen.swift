@@ -9,6 +9,9 @@ import SwiftUI
 
 struct StoreScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @State var responseProduct: GeneralResponse<ProductsResponse>? = nil
     @State var listProducts: [[Product]] = []
     @State var product: Product? = nil
@@ -54,6 +57,8 @@ struct StoreScreen: View {
                 ZStack {
                     HStack {
                         Image(uiImage: UIImage.searchIcon)
+                            .renderingMode(isDark ? .template : .original)
+                            .foregroundColor(isDark ? .white : nil)
                         
                         if searchedText != "" {
                             
@@ -76,7 +81,7 @@ struct StoreScreen: View {
                         }
                         
                     }.padding(.vertical, 10).frame(maxWidth: .infinity, alignment: .leading)
-                }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(Color.black,lineWidth:1).background(Color.white)).padding(.horizontal, 12).frame(maxWidth: .infinity).onTapGesture {
+                }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :Color.black,lineWidth:1).background(isDark ? .black :Color.white)).padding(.horizontal, 12).frame(maxWidth: .infinity).onTapGesture {
                     showSearchDialog = true
                 }
                 
@@ -88,8 +93,10 @@ struct StoreScreen: View {
                         
                         HStack {
                             Image(uiImage: UIImage.tune)
+                                .renderingMode(isDark ? .template : .original)
+                                .foregroundColor(isDark ? .white : nil)
                             Text("Filter")
-                        }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(Color.black,lineWidth:1)).padding(.top, 10).frame(alignment: .leading).onTapGesture {
+                        }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :Color.black,lineWidth:1)).padding(.top, 10).frame(alignment: .leading).onTapGesture {
                             showBottomSheet = true
                         }
                         
@@ -99,36 +106,32 @@ struct StoreScreen: View {
                                 if bottomSheetVM.selectedSortChip != nil {
                                     HStack {
                                         Text("\(bottomSheetVM.selectedSortChip!)")
-                                    }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(Color.black,lineWidth:1)).frame(alignment: .leading)
+                                    }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :Color.black,lineWidth:1)).frame(alignment: .leading)
                                 }
                                 
                                 if bottomSheetVM.selectedCategoryChip != nil {
                                     HStack {
                                         Text("\(bottomSheetVM.selectedCategoryChip!)")
-                                    }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(Color.black,lineWidth:1)).frame(alignment: .leading)
+                                    }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :Color.black,lineWidth:1)).frame(alignment: .leading)
                                 }
                                 
                                 if bottomSheetVM.hargaTerendah != nil && bottomSheetVM.hargaTerendah != "" {
                                     HStack {
                                         Text("Rp.\(bottomSheetVM.hargaTerendah!)")
-                                    }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(Color.black,lineWidth:1)).frame(alignment: .leading)
+                                    }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :Color.black,lineWidth:1)).frame(alignment: .leading)
                                 }
                                 
                                 if bottomSheetVM.hargaTertinggi != nil && bottomSheetVM.hargaTertinggi != "" {
                                     HStack {
                                         Text("Rp.\(bottomSheetVM.hargaTertinggi!)")
-                                    }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(Color.black,lineWidth:1)).frame(alignment: .leading)
+                                    }.padding(8).background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :Color.black,lineWidth:1)).frame(alignment: .leading)
                                 }
-                                
-                                let _ = Log.d("cek filter state \(filterProducts)")
-                                
+                 
                                 if filterProducts {
                                     
                                     VStack{
                                         EmptyView()
                                     }.onAppear {
-                                        
-                                        let _ = Log.d("cek masuk empty view")
                                         
                                         getProductsWithFilter()
                                         
@@ -144,12 +147,19 @@ struct StoreScreen: View {
                             Divider().padding(.top, 8)
                             
                             if !isGrid {
-                                Image(uiImage: UIImage.formatListBulleted).padding(.top, 8).onTapGesture {
+                                Image(uiImage: UIImage.formatListBulleted)
+                                    .renderingMode(isDark ? .template : .original)
+                                    .foregroundColor(isDark ? .white : nil)
+                                    .padding(.top, 8).onTapGesture {
                                     isGrid = true
                                     UserDefaults.standard.setValue(true, forKey: "isGrid")
                                 }
                             } else {
-                                Image(uiImage: UIImage.gridView).padding(.top, 8).onTapGesture {
+                                Image(uiImage: UIImage.gridView)
+                                    .renderingMode(isDark ? .template : .original)
+                                    .foregroundColor(isDark ? .white : nil)
+                                    .padding(.top, 8)
+                                    .onTapGesture {
                                     isGrid = false
                                     UserDefaults.standard.setValue(false, forKey: "isGrid")
                                 }
@@ -163,8 +173,6 @@ struct StoreScreen: View {
                         VStack {
                             EmptyView()
                         }.onAppear {
-                            let _ = Log.d("store expired")
-                            let _ = Log.d("cek expired alert : \(pagingVM.showExpiredAlert)")
                             alertExpiredMessage = pagingVM.expiredAlertMessage
                             showExpiredAlert = pagingVM.showExpiredAlert
                         }
@@ -201,7 +209,7 @@ struct StoreScreen: View {
                                     ForEach(product, id: \.self) { i in
                                         HStack {
                                             let image = i.image
-                                            ImageLoader(contentMode: .constant("fill"), urlString: image).frame(width: 80, height: 80)
+                                            ImageLoader(contentMode: .constant("fill"), urlString: image).frame(width: 80, height: 80).padding(.leading, 4)
                                             
                                             VStack {
                                                 Text("\(i.productName)").font(.system(size: 14)).padding(.top, 8).frame(maxWidth: .infinity, alignment: .leading).padding(.trailing)
@@ -213,20 +221,24 @@ struct StoreScreen: View {
                                                 
                                                 HStack {
                                                     Image(uiImage: UIImage.personSmall)
+                                                        .renderingMode(isDark ? .template : .original)
+                                                        .foregroundColor(isDark ? .white : nil)
                                                     Text("\(i.store)").font(.system(size: 10))
                                                 }.frame(maxWidth: .infinity, alignment: .leading)
                                                 
                                                 HStack {
                                                     Image(uiImage: UIImage.star)
+                                                        .renderingMode(isDark ? .template : .original)
+                                                        .foregroundColor(isDark ? .white : nil)
                                                     Text("\(i.productRating)").font(.system(size: 10))
                                                     Divider().padding(.vertical, 4)
-                                                    Text("Terjual \(i.sale)").font(.system(size: 10))
+                                                    Text(isEN ? "Sold \(i.sale)" :"Terjual \(i.sale)").font(.system(size: 10))
                                                 }.frame(maxWidth: .infinity, maxHeight: 20 ,alignment: .leading)
                                                 
                                             }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 4)
                                         }
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                        .background(Color.white)
+                                        .background(isDark ? .black :Color.white)
                                         .cornerRadius(8)
                                         .padding(.top, 12)
                                         .padding(.horizontal, 20)

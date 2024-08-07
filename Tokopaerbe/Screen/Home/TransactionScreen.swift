@@ -28,13 +28,14 @@ struct TransactionScreen: View {
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         } else {
-            if !errorMessageAlert.isEmpty {
+            if transactionResponse!.isEmpty {
                 VStack {
                     Image(uiImage: UIImage.errorState)
                     Text("Empty").font(.system(size: 32)).bold()
                     Text("\(errorMessageAlert)")
                     Button(action: {
                         getTransactionHistory()
+                        isLoading = true
                     }, label: {
                         Text("Refresh").foregroundColor(.white)
                     }).padding(16).padding(.horizontal, 16).background(Color(hex: "#6750A4")).cornerRadius(100).padding(8)
@@ -110,11 +111,14 @@ struct TransactionScreen: View {
                                 .shadow(color: .gray, radius: 2, x: 0, y: 2)
                         }.padding(.horizontal).padding(.vertical, 4)
                     
-                    NavigationLink(
-                        destination: SuccessPaymentScreen(fulfillmentResponse: .constant(FulfillmentResponse(invoiceId: transactionResponse![chosenItem].invoiceId, status: transactionResponse![chosenItem].status, date: transactionResponse![chosenItem].date, time: transactionResponse![chosenItem].time, payment: transactionResponse![chosenItem].payment, total: transactionResponse![chosenItem].total))),
-                        isActive: $goToRating) {
-                            EmptyView()
-                        }
+                    if !transactionResponse!.isEmpty {
+                        NavigationLink(
+                            destination: SuccessPaymentScreen(fulfillmentResponse: .constant(FulfillmentResponse(invoiceId: transactionResponse![chosenItem].invoiceId, status: transactionResponse![chosenItem].status, date: transactionResponse![chosenItem].date, time: transactionResponse![chosenItem].time, payment: transactionResponse![chosenItem].payment, total: transactionResponse![chosenItem].total))),
+                            isActive: $goToRating) {
+                                EmptyView()
+                            }
+                    }
+                    
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .alert(isPresented: $showExpiredAlert, content: {

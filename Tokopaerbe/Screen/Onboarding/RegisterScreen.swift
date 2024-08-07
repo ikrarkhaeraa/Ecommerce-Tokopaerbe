@@ -9,6 +9,9 @@ import SwiftUI
 
 struct RegisterScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var TFborderColorEmail: Color = Color(hex: "#49454F")
@@ -33,7 +36,7 @@ struct RegisterScreen: View {
         ZStack {
             
             VStack {
-                Text("Daftar").font(.system(size: 24))
+                Text(isEN ? "Register" :"Daftar").font(.system(size: 24))
                 
                 Divider()
                 
@@ -42,43 +45,33 @@ struct RegisterScreen: View {
                         
                         Text("Email")
                             .font(.system(size: 16))
-                            .foregroundColor(TitleTFEmail)
-                            .background(Color.white)
+                            .foregroundColor(isDark ? .white :TitleTFEmail)
+                            .background(isDark ? .black : Color.white)
                         
-                        TextField("Masukkan Email Anda", text: $email)
+                        TextField(isEN ? "Input your email" : "Masukkan Email Anda", text: $email)
                             .padding(.all, 24)
-                            .background(RoundedRectangle(cornerRadius:8).stroke(TFborderColorEmail,lineWidth:2))
+                            .background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :TFborderColorEmail,lineWidth:2))
                             .cornerRadius(10)
-//                            .padding()
                             .font(.system(size: 16))
                             .autocapitalization(.none)
                             .onReceive(email.publisher.collect()) { _ in
                                 if email.isEmpty {
-                                    TFborderColorEmail = Color(hex: "#49454F")
-                                    TitleTFEmail = Color(hex: "#6750A4")
-                                    emailHelperString = "Contoh : test@gmail.com"
-                                    emailHelperColorText = Color(hex: "#49454F")
+                                    TFborderColorEmail = isDark ? .white : Color(hex: "#49454F")
+                                    TitleTFEmail =  isDark ? .white : Color(hex: "#6750A4")
+                                    emailHelperString = isEN ? "Example : test@gmail.com" : "Contoh : test@gmail.com"
+                                    emailHelperColorText = isDark ? .white : Color(hex: "#49454F")
                                 } else if !isValidEmail(email: email) {
                                     TFborderColorEmail = Color.red
                                     TitleTFEmail = Color.red
-                                    emailHelperString = "Email tidak valid"
+                                    emailHelperString = isEN ? "Email is not valid" : "Email tidak valid"
                                     emailHelperColorText = Color.red
                                 } else {
                                     TFborderColorEmail = Color(hex: "#49454F")
-                                    TitleTFEmail = Color(hex: "#6750A4")
-                                    emailHelperString = "Contoh : test@gmail.com"
-                                    emailHelperColorText = Color(hex: "#49454F")
+                                    TitleTFEmail =  isDark ? .white : Color(hex: "#6750A4")
+                                    emailHelperString = isEN ? "Example : test@gmail.com" : "Contoh : test@gmail.com"
+                                    emailHelperColorText = isDark ? .white : Color(hex: "#49454F")
                                 }
                             }
-                        
-//                        Rectangle().fill(Color.white).overlay(
-//                            Text("Email")
-//                                .font(.system(size: 16))
-//                                .foregroundColor(TitleTFEmail)
-//                                .background(Color.white)
-//                        ).frame(width: 50, height: 16)
-//                            .padding(.bottom, 70)
-//                            .padding(.leading, 40)
                         
                         Text(emailHelperString).font(.system(size: 14)).foregroundColor(emailHelperColorText).padding(.top, 8)
                         
@@ -88,43 +81,33 @@ struct RegisterScreen: View {
                         
                         Text("Password")
                             .font(.system(size: 16))
-                            .foregroundColor(TitleTFPass)
-                            .background(Color.white)
+                            .foregroundColor(isDark ? .white :TitleTFEmail)
+                            .background(isDark ? .black : Color.white)
                         
-                        SecureField("Masukkan Password Anda", text: $password)
+                        SecureField(isEN ? "Input your password" :"Masukkan Password Anda", text: $password)
                             .padding(.all, 24)
-                            .background(RoundedRectangle(cornerRadius:8).stroke(TFborderColorPass,lineWidth:2))
+                            .background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :TFborderColorPass,lineWidth:2))
                             .cornerRadius(10)
-//                            .padding()
                             .font(.system(size: 16))
                             .autocapitalization(.none)
                             .onReceive(password.publisher.collect()) {_ in
                                 if password.isEmpty {
-                                    TFborderColorPass = Color(hex: "#49454F")
-                                    TitleTFPass = Color(hex: "#6750A4")
-                                    passHelperString = "Minimal 8 karakter"
-                                    passHelperColorText = Color(hex: "#49454F")
+                                    TFborderColorPass = isDark ? .white : Color(hex: "#49454F")
+                                    TitleTFPass = isDark ? .white : Color(hex: "#6750A4")
+                                    passHelperString = isEN ? "At least 8 characters" : "Minimal 8 karakter"
+                                    passHelperColorText = isDark ? .white : Color(hex: "#49454F")
                                 } else if password.count < 8 {
                                     TFborderColorPass = Color.red
                                     TitleTFPass = Color.red
-                                    passHelperString = "Password Tidak valid (Minimal 8 karakter)"
+                                    passHelperString = isEN ? "Password is not valid (At least 8 characters)" : "Password Tidak valid (Minimal 8 karakter)"
                                     passHelperColorText = Color.red
                                 } else {
-                                    TFborderColorPass = Color(hex: "#49454F")
-                                    TitleTFPass = Color(hex: "#6750A4")
-                                    passHelperString = "Minimal 8 karakter"
-                                    passHelperColorText = Color(hex: "#49454F")
+                                    TFborderColorPass = isDark ? .white : Color(hex: "#49454F")
+                                    TitleTFPass = isDark ? .white : Color(hex: "#6750A4")
+                                    passHelperString = isEN ? "At least 8 character" : "Minimal 8 karakter"
+                                    passHelperColorText = isDark ? .white : Color(hex: "#49454F")
                                 }
                             }
-                        
-//                        Rectangle().fill(Color.white).overlay(
-//                            Text("Password")
-//                                .font(.system(size: 16))
-//                                .foregroundColor(TitleTFPass)
-//                                .background(Color.white)
-//                        ).frame(width: 80, height: 16)
-//                            .padding(.bottom, 70)
-//                            .padding(.leading, 40)
                         
                         Text(passHelperString).font(.system(size: 14)).foregroundColor(passHelperColorText).padding(.top, 8)
                         
@@ -135,9 +118,9 @@ struct RegisterScreen: View {
                 if TFborderColorPass == Color.red || TFborderColorEmail == Color.red || email.isEmpty || password.isEmpty {
                     
                     Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-                        Text("Daftar")
+                        Text(isEN ? "Register" :"Daftar")
                             .foregroundColor(.white)
-                            .frame(maxWidth: .infinity) // Make button take maximum width available
+                            .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color(hex: "#CAC4D0"))
                             .cornerRadius(25) // Set corner radius
@@ -174,13 +157,13 @@ struct RegisterScreen: View {
                             } else {
                                 isLoading = false
                                 showAlert = true
-                                alertMessage = "Server tidak dapat melayani permintaan anda"
+                                alertMessage = isEN ? "Server cannot handle your request" :"Server tidak dapat melayani permintaan anda"
                             }
                         }
                         
                     }) {
                         
-                        Text("Daftar")
+                        Text(isEN ? "Register" :"Daftar")
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -202,19 +185,19 @@ struct RegisterScreen: View {
                 
                 ZStack {
                     Divider()
-                    Rectangle().fill(Color.white).overlay(
-                        Text("atau masuk dengan")
+                    Rectangle().fill(isDark ? .black :Color.white).overlay(
+                        Text(isEN ? "or login with" :"atau masuk dengan")
                             .font(.system(size: 16))
-                            .foregroundColor(Color(hex: "#6750A4"))
-                            .background(Color.white)
+                            .foregroundColor(isDark ? .white :Color(hex: "#6750A4"))
+                            .background(isDark ? .black :Color.white)
                     ).frame(width: 180, height: 16)
-                }.padding(.horizontal, 20)
+                }.padding(.horizontal, 20).padding(.bottom)
                 
                 Button(action: {
                     goToLogin = true
                 }, label: {
-                    Text("Masuk")
-                        .foregroundColor(Color(hex: "#6750A4"))
+                    Text(isEN ? "Login" :"Masuk")
+                        .foregroundColor(isDark ? .white :Color(hex: "#6750A4"))
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(RoundedRectangle(cornerRadius:25).stroke(Color.gray,lineWidth:2))
@@ -223,14 +206,14 @@ struct RegisterScreen: View {
 
                 VStack {
                     Group {
-                        Text("Dengan masuk disini, kamu menyetujui ").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")) +
-                        Text("Syarat & Ketentuan ").font(.system(size: 12)).foregroundColor(Color(hex: "#6750A4")) +
-                        Text("serta ").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")) +
-                        Text("Kebijakan Privasi ").font(.system(size: 12)).foregroundColor(Color(hex: "#6750A4")) +
-                        Text("TokoPhincon.").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F"))
+                        Text(isEN ? "By entering here, you agree " : "Dengan masuk disini, kamu menyetujui ").font(.system(size: 12)).foregroundColor(isDark ? .white : Color(hex: "#49454F")) +
+                        Text(isEN ? "Terms $ Condition " : "Syarat & Ketentuan ").font(.system(size: 12)).foregroundColor(Color(hex: "#6750A4")) +
+                        Text(isEN ? "and " : "serta ").font(.system(size: 12)).foregroundColor(isDark ? .white : Color(hex: "#49454F")) +
+                        Text(isEN ? "Privacy Policy " : "Kebijakan Privasi ").font(.system(size: 12)).foregroundColor(Color(hex: "#6750A4")) +
+                        Text("TokoPhincon.").font(.system(size: 12)).foregroundColor(isDark ? .white : Color(hex: "#49454F"))
                     }
                     .multilineTextAlignment(.center)
-                }.padding(.horizontal, 20)
+                }.padding(.horizontal, 20).padding(.top)
                 
             }.frame(maxHeight: .infinity, alignment: .top).padding(.top, 10).navigationBarBackButtonHidden()
             
