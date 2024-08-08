@@ -103,6 +103,7 @@ struct StoreScreen: View {
                             
                         ScrollView(.horizontal) {
                             HStack {
+                                
                                 if bottomSheetVM.selectedSortChip != nil {
                                     HStack {
                                         Text("\(bottomSheetVM.selectedSortChip!)")
@@ -280,20 +281,24 @@ struct StoreScreen: View {
                                                 
                                                 HStack {
                                                     Image(uiImage: UIImage.personSmall)
+                                                        .renderingMode(isDark ? .template : .original)
+                                                        .foregroundColor(isDark ? .white : nil)
                                                     Text("\(i.store)").font(.system(size: 10))
                                                 }.frame(maxWidth: .infinity, alignment: .leading)
                                                 
                                                 HStack {
                                                     Image(uiImage: UIImage.star)
+                                                        .renderingMode(isDark ? .template : .original)
+                                                        .foregroundColor(isDark ? .white : nil)
                                                     Text("\(i.productRating)").font(.system(size: 10))
                                                     Divider().padding(.vertical, 4)
-                                                    Text("Terjual \(i.sale)").font(.system(size: 10))
+                                                    Text(isEN ? "Sold \(i.sale)" :"Terjual \(i.sale)").font(.system(size: 10))
                                                 }.frame(maxWidth: .infinity, maxHeight: 20 ,alignment: .leading)
                                                 
                                             }.frame(maxWidth: .infinity, alignment: .leading).padding(8)
                                         }
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                        .background(Color.white)
+                                        .background(isDark ? .black :Color.white)
                                         .cornerRadius(8)
                                         .padding(2)
                                         .shadow(color: .gray, radius: 2, x: 0, y: 2)
@@ -411,12 +416,16 @@ struct StoreScreen: View {
 }
 
 struct ShimmerView: View {
+    
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @State private var startPoint: UnitPoint = .leading
     @State private var endPoint: UnitPoint = .trailing
 
     var body: some View {
         LinearGradient(
-            gradient: Gradient(colors: [Color.white.opacity(0.1), Color.white.opacity(0.3), Color.white.opacity(0.5)]),
+            gradient: Gradient(colors: isDark ? [Color.black.opacity(0.1), Color.black.opacity(0.3), Color.black.opacity(0.5)] : [Color.white.opacity(0.1), Color.white.opacity(0.3), Color.white.opacity(0.5)]),
             startPoint: startPoint,
             endPoint: endPoint
             
@@ -452,10 +461,13 @@ import SwiftUI
 
 struct LoadingPagingView: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     var body: some View {
         
         ZStack {
-            Rectangle().fill(Color.white)
+            Rectangle().fill(isDark ? .black :Color.white)
 
             ProgressView()
 

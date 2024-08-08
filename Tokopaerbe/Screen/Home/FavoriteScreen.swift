@@ -11,6 +11,9 @@ import AlertToast
 
 struct FavoriteScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     // MARK: Core Data
     @FetchRequest(sortDescriptors: []) private var favorites: FetchedResults<FavoriteEntity>
     @FetchRequest(sortDescriptors: []) private var carts: FetchedResults<CartEntity>
@@ -30,19 +33,25 @@ struct FavoriteScreen: View {
         if !favorites.isEmpty {
             VStack {
                 HStack {
-                    Text("\(favorites.count) barang").foregroundColor(Color(hex: "#49454F")).font(.system(size: 16)).frame(maxWidth: .infinity, alignment: .leading)
+                    Text(isEN ? "\(favorites.count) items" :"\(favorites.count) barang").foregroundColor(isDark ? .white :Color(hex: "#49454F")).font(.system(size: 16)).frame(maxWidth: .infinity, alignment: .leading)
                     
                     HStack {
-                        Divider().padding(.vertical, 6)
+                        Divider().padding(.vertical, 6).foregroundColor(isDark ? .white : .black)
                     }
                     
                     if isGrid {
-                        Image(uiImage: .gridView).onTapGesture {
+                        Image(uiImage: .gridView)
+                            .renderingMode(isDark ? .template : .original)
+                            .foregroundColor(isDark ? .white : nil)
+                            .onTapGesture {
                             isGrid = false
                             UserDefaults.standard.setValue(false, forKey: "isGridFav")
                         }
                     } else {
-                        Image(uiImage: .formatListBulleted).onTapGesture {
+                        Image(uiImage: .formatListBulleted)
+                            .renderingMode(isDark ? .template : .original)
+                            .foregroundColor(isDark ? .white : nil)
+                            .onTapGesture {
                             isGrid = true
                             UserDefaults.standard.setValue(true, forKey: "isGridFav")
                         }
@@ -56,10 +65,8 @@ struct FavoriteScreen: View {
                     if !isGrid {
                         VStack {
                             ForEach(favorites.indices, id: \.self) { i in
-                                let _ = Log.d("saved products: \(favorites[i])")
                                 VStack {
                                     HStack {
-                                        let _ = Log.d("cek image ke \(i): \(favorites[i].productImage!)")
                                         ImageLoader(contentMode: .constant("fill"), urlString: favorites[i].productImage!).frame(width: 80, height: 80)
                                         
                                         VStack {
@@ -72,14 +79,18 @@ struct FavoriteScreen: View {
                                             
                                             HStack {
                                                 Image(uiImage: UIImage.personSmall)
+                                                    .renderingMode(isDark ? .template : .original)
+                                                    .foregroundColor(isDark ? .white : nil)
                                                 Text("\(favorites[i].productStore!)").font(.system(size: 10))
                                             }.frame(maxWidth: .infinity, alignment: .leading)
                                             
                                             HStack {
                                                 Image(uiImage: UIImage.star)
+                                                    .renderingMode(isDark ? .template : .original)
+                                                    .foregroundColor(isDark ? .white : nil)
                                                 Text("\(Float16(favorites[i].productRating))").font(.system(size: 10))
                                                 Divider().padding(.vertical, 4)
-                                                Text("Terjual \(favorites[i].productSale)").font(.system(size: 10))
+                                                Text(isEN ? "Sold \(favorites[i].productSale)" : "Terjual \(favorites[i].productSale)").font(.system(size: 10))
                                             }.frame(maxWidth: .infinity, maxHeight: 20 ,alignment: .leading)
                                             
                                         }.frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 4)
@@ -89,30 +100,32 @@ struct FavoriteScreen: View {
                                         Button(action: {
                                             deleteProduct(withId: favorites[i].productId!)
                                                }) {
-                                                   Image(uiImage: .delete24Px) // Replace with your custom image name
+                                                   Image(uiImage: .delete24Px)
                                                        .resizable()
                                                        .scaledToFit()
                                                        .frame(maxWidth: 24, maxHeight: 24)
+//                                                       .renderingMode(isDark ? .template : .original)
+//                                                       .foregroundColor(isDark ? .white : nil)
                                                        .padding(.all, 4)
                                                        .background(RoundedRectangle(cornerRadius: 8)
-                                                        .stroke(Color(hex: "#79747E"), lineWidth: 1))
+                                                        .stroke(isDark ? .white :Color(hex: "#79747E"), lineWidth: 1))
                                                }
                                         
                                         Button(action: {
                                             handleAddToCart(id: favorites[i].productId!, name: favorites[i].productName!, image: favorites[i].productImage!, price: favorites[i].productPrice, variant: favorites[i].productVariant!, stock: favorites[i].productStock)
                                                }) {
-                                                   Text("+ Keranjang")
+                                                   Text(isEN ? "+ Cart" :"+ Keranjang")
                                                        .frame(maxWidth: .infinity)
                                                        .padding(.vertical, 8)
-                                                       .foregroundColor(Color(hex: "#6750A4"))
+                                                       .foregroundColor(isDark ? .white :Color(hex: "#6750A4"))
                                                        .font(.system(size: 12))
                                                        .background(RoundedRectangle(cornerRadius: 100)
-                                                        .stroke(Color(hex: "#79747E"), lineWidth: 1))
+                                                        .stroke(isDark ? .white :Color(hex: "#79747E"), lineWidth: 1))
                                                }.frame(maxWidth: .infinity).padding(.leading, 4)
                                     }.frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 16).padding(.horizontal, 16)
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.white)
+                                .background(isDark ? .black :Color.white)
                                 .cornerRadius(8)
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 10)
@@ -136,14 +149,18 @@ struct FavoriteScreen: View {
                                         
                                         HStack {
                                             Image(uiImage: UIImage.personSmall)
+                                                .renderingMode(isDark ? .template : .original)
+                                                .foregroundColor(isDark ? .white : nil)
                                             Text("\(favorites[i].productStore!)").font(.system(size: 10))
                                         }.frame(maxWidth: .infinity, alignment: .leading)
                                         
                                         HStack {
                                             Image(uiImage: UIImage.star)
+                                                .renderingMode(isDark ? .template : .original)
+                                                .foregroundColor(isDark ? .white : nil)
                                             Text("\(Float16(favorites[i].productRating))").font(.system(size: 10))
                                             Divider().padding(.vertical, 4)
-                                            Text("Terjual \(favorites[i].productSale)").font(.system(size: 10))
+                                            Text(isEN ? "Sold \(favorites[i].productSale)" :"Terjual \(favorites[i].productSale)").font(.system(size: 10))
                                         }.frame(maxWidth: .infinity, maxHeight: 20 ,alignment: .leading)
                                         
                                     }.frame(maxWidth: .infinity, alignment: .leading).padding(8)
@@ -152,30 +169,32 @@ struct FavoriteScreen: View {
                                         Button(action: {
                                             deleteProduct(withId: favorites[i].productId!)
                                                }) {
-                                                   Image(uiImage: .delete24Px) // Replace with your custom image name
+                                                   Image(uiImage: .delete24Px)
                                                        .resizable()
                                                        .scaledToFit()
+//                                                       .renderingMode(isDark ? .template : .original)
+//                                                       .foregroundColor(isDark ? .white : nil)
                                                        .frame(maxWidth: 24, maxHeight: 24)
                                                        .padding(.all, 4)
                                                        .background(RoundedRectangle(cornerRadius: 8)
-                                                        .stroke(Color(hex: "#79747E"), lineWidth: 1))
+                                                        .stroke(isDark ? .white :Color(hex: "#79747E"), lineWidth: 1))
                                                }
                                         
                                         Button(action: {
                                             handleAddToCart(id: favorites[i].productId!, name: favorites[i].productName!, image: favorites[i].productImage!, price: favorites[i].productPrice, variant: favorites[i].productVariant!, stock: favorites[i].productStock)
                                                }) {
-                                                   Text("+ Keranjang")
+                                                   Text(isEN ? "+ Cart" :"+ Keranjang")
                                                        .frame(maxWidth: .infinity)
                                                        .padding(.vertical, 8)
-                                                       .foregroundColor(Color(hex: "#6750A4"))
+                                                       .foregroundColor(isDark ? .white :Color(hex: "#6750A4"))
                                                        .font(.system(size: 12))
                                                        .background(RoundedRectangle(cornerRadius: 100)
-                                                        .stroke(Color(hex: "#79747E"), lineWidth: 1))
+                                                        .stroke(isDark ? .white :Color(hex: "#79747E"), lineWidth: 1))
                                                }.frame(maxWidth: .infinity).padding(.leading, 4)
                                     }.frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 16).padding(.horizontal, 16)
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.white)
+                                .background(isDark ? .black :Color.white)
                                 .cornerRadius(8)
                                 .padding(2)
                                 .shadow(color: .gray, radius: 2, x: 0, y: 2)
@@ -194,8 +213,8 @@ struct FavoriteScreen: View {
         } else {
             VStack {
                 Image(uiImage: .errorState)
-                Text("Empty").bold().padding().font(.system(size: 32)).foregroundColor(Color(hex: "#1D1B20"))
-                Text("Your requested data is unavailable").font(.system(size: 16)).foregroundColor(Color(hex: "#1D1B20"))
+                Text("Empty").bold().padding().font(.system(size: 32)).foregroundColor(isDark ? .white :Color(hex: "#1D1B20"))
+                Text("Your requested data is unavailable").font(.system(size: 16)).foregroundColor(isDark ? .white :Color(hex: "#1D1B20"))
             }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
     }

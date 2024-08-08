@@ -7,15 +7,23 @@ struct SearchBar: View {
     @Binding var temp2: String
     @State private var isEditing = false
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     var body: some View {
         HStack {
             
             HStack {
                 Image(uiImage: UIImage.searchIcon)
+                    .renderingMode(isDark ? .template : .original)
+                    .foregroundColor(isDark ? .white : nil)
                 TextField("Search ...", text: $text)
                 
                 if text != "" {
-                    Image(uiImage: UIImage.iconClose).onTapGesture {
+                    Image(uiImage: UIImage.iconClose)
+                        .renderingMode(isDark ? .template : .original)
+                        .foregroundColor(isDark ? .white : nil)
+                        .onTapGesture {
                         isEditing = false
                         text = ""
                         temp = ""
@@ -27,7 +35,7 @@ struct SearchBar: View {
                 }
                 
             }.padding(20)
-                .background(RoundedRectangle(cornerRadius:8).stroke(Color.black,lineWidth:2))
+                .background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :Color.black,lineWidth:2))
                 .cornerRadius(8)
                 .padding(.horizontal, 10)
                 .onTapGesture {

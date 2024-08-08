@@ -177,7 +177,10 @@ struct MainActivity: View {
             if showSearchDialog {
                 
                 VStack {
-                    Image(uiImage: UIImage.arrowleft).frame(maxWidth: .infinity, alignment: .leading).padding(8).padding(.leading, 8).onTapGesture {
+                    Image(uiImage: UIImage.arrowleft)
+                        .renderingMode(isDark ? .template : .original)
+                        .foregroundColor(isDark ? .white : nil)
+                        .frame(maxWidth: .infinity, alignment: .leading).padding(8).padding(.leading, 8).onTapGesture {
                         choosenSearchText = searchVM.searchText
                         showSearchDialog = false
                     }.onAppear {
@@ -210,9 +213,14 @@ struct MainActivity: View {
                         VStack {
                             ForEach(searchVM.product, id: \.self) { i in
                                 HStack {
-                                    Image(uiImage: UIImage.searchIcon).padding(4)
+                                    Image(uiImage: UIImage.searchIcon).renderingMode(isDark ? .template : .original)
+                                        .foregroundColor(isDark ? .white : nil)
+                                        .padding(4)
                                     Text("\(i)").frame(maxWidth: .infinity, alignment: .leading).padding(4)
-                                    Image(uiImage: UIImage.arrowRight).padding(4)
+                                    Image(uiImage: UIImage.arrowRight)
+                                        .renderingMode(isDark ? .template : .original)
+                                        .foregroundColor(isDark ? .white : nil)
+                                        .padding(4)
                                 }.padding(8).onTapGesture {
                                     let _ = Log.d("cek klik text : \(i)")
                                     choosenSearchText = i
@@ -231,7 +239,7 @@ struct MainActivity: View {
                         Text("Search").foregroundColor(.white)
                     }).frame(maxWidth: .infinity, maxHeight: 40).background(RoundedRectangle(cornerRadius: 100).fill(Color(hex: "#6750A4"))).padding(16)
                     
-                }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top).background(Color.white)
+                }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top).background(isDark ? .black : Color.white)
             }
             
             if showBottomSheet {
@@ -243,7 +251,11 @@ struct MainActivity: View {
                         if !bottomSheetReset {
                             for i in bottomSheetVM.chipSortArrayTemp.indices {
                                 if bottomSheetVM.chipSortArrayTemp[i].isSelected == nil {
-                                    bottomSheetVM.chipSortArray[i].isSelected = false
+                                    if isEN {
+                                        bottomSheetVM.chipSortArrayEN[i].isSelected = false
+                                    } else {
+                                        bottomSheetVM.chipSortArray[i].isSelected = false
+                                    }
                                 }
                             }
                             
@@ -266,9 +278,17 @@ struct MainActivity: View {
                         } else {
                             for i in bottomSheetVM.chipSortArrayTemp.indices {
                                 if bottomSheetVM.chipSortArrayTemp[i].isSelected == nil {
-                                    bottomSheetVM.chipSortArray[i].isSelected = false
+                                    if isEN {
+                                        bottomSheetVM.chipSortArrayEN[i].isSelected = false
+                                    } else {
+                                        bottomSheetVM.chipSortArray[i].isSelected = false
+                                    }
                                 } else {
-                                    bottomSheetVM.chipSortArray[i].isSelected = bottomSheetVM.chipSortArrayTemp[i].isSelected
+                                    if isEN {
+                                        bottomSheetVM.chipSortArrayEN[i].isSelected = bottomSheetVM.chipSortArrayTemp[i].isSelected
+                                    } else {
+                                        bottomSheetVM.chipSortArray[i].isSelected = bottomSheetVM.chipSortArrayTemp[i].isSelected
+                                    }
                                 }
                             }
                             
@@ -312,48 +332,39 @@ struct MainActivity: View {
                             .padding(.top, 8)
                         
                         HStack {
-                            Text("Filter").font(.system(size: 20)).bold().frame(maxWidth: .infinity, alignment: .leading)
+                            Text("Filter").font(.system(size: 20)).bold().frame(maxWidth: .infinity, alignment: .leading).foregroundColor(isDark ? .white : .black)
                             Text("Reset").font(.system(size: 16)).foregroundColor(Color(hex: "#6750A4")).bold().onTapGesture {
                                 
                                 for i in bottomSheetVM.chipSortArray.indices {
-                                    bottomSheetVM.chipSortArray[i].isSelected = false
+                                    if isEN {
+                                        bottomSheetVM.chipSortArrayEN[i].isSelected = false
+                                    } else {
+                                        bottomSheetVM.chipSortArray[i].isSelected = false
+                                    }
                                 }
                                 
                                 for i in bottomSheetVM.chipCategoryArray.indices {
                                     bottomSheetVM.chipCategoryArray[i].isSelected = false
                                 }
                                 
-//                                bottomSheetVM.selectedSortChip = nil
-//                                bottomSheetVM.selectedCategoryChip = nil
-//                                bottomSheetVM.hargaTerendah = nil
-//                                bottomSheetVM.hargaTertinggi = nil
                                 hargaTerendah = ""
                                 hargaTertinggi = ""
                                 
                                 bottomSheetReset = true
-//                                bottomSheetVM.hargaTerendahTemp = nil
-//                                bottomSheetVM.hargaTertinggiTemp = nil
                                 
                             }
                         }.padding(.horizontal, 12)
                         
                         
                         VStack {
-                            Text("Urutkan").font(.system(size: 16)).bold().frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8).padding(.bottom, -8)
-                            
-//                            HStack {
-//                                ForEach($bottomSheetVM.chipSortArray) { data in
-//                                    ChipView(titleKey: data.titleKey,
-//                                             isSelected: data.isSelected, bottomSheetVM: bottomSheetVM, chipType: .constant("sort"))
-//                                }
-//                            }
+                            Text(isEN ? "Sort" :"Urutkan").font(.system(size: 16)).bold().foregroundColor(isDark ? .white : .black).frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8).padding(.bottom, -8)
                             
                             HStack {
-                                WrappedLayout(chip: $bottomSheetVM.chipSortArray, bottomSheetVM: bottomSheetVM, chipType: .constant("sort"))
+                                WrappedLayout(chip: isEN ? $bottomSheetVM.chipSortArrayEN :$bottomSheetVM.chipSortArray, bottomSheetVM: bottomSheetVM, chipType: .constant("sort"))
                             }.frame(maxWidth: .infinity, maxHeight: 87)
                             
                             
-                            Text("Kategori").font(.system(size: 16)).bold().frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
+                            Text(isEN ? "Category" :"Kategori").font(.system(size: 16)).bold().foregroundColor(isDark ? .white : .black).frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
                             
                             HStack {
                                 ForEach($bottomSheetVM.chipCategoryArray) { data in
@@ -362,22 +373,22 @@ struct MainActivity: View {
                                 }
                             }.frame(maxWidth: .infinity, alignment: .leading)
                             
-                            Text("Harga").font(.system(size: 16)).bold().frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
+                            Text(isEN ? "Price" :"Harga").font(.system(size: 16)).bold().foregroundColor(isDark ? .white : .black).frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
                             
                             HStack {
                                 ZStack(alignment: .leading) {
-                                    TextField("Harga terendah", text: $hargaTerendah)
+                                    TextField(isEN ? "Lowest Price" :"Harga terendah", text: $hargaTerendah)
                                         .padding(18)
-                                        .background(RoundedRectangle(cornerRadius:8).stroke(Color(hex: "#79747E"),lineWidth:2))
+                                        .background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :Color(hex: "#79747E"),lineWidth:2))
                                         .cornerRadius(10)
                                         .font(.system(size: 14))
                                         .autocapitalization(.none)
                                 }
                                 
                                 ZStack(alignment: .leading) {
-                                    TextField("Harga tertinggi", text: $hargaTertinggi)
+                                    TextField(isEN ? "Highest Price" :"Harga tertinggi", text: $hargaTertinggi)
                                         .padding(18)
-                                        .background(RoundedRectangle(cornerRadius:8).stroke(Color(hex: "#79747E"),lineWidth:2))
+                                        .background(RoundedRectangle(cornerRadius:8).stroke(isDark ? .white :Color(hex: "#79747E"),lineWidth:2))
                                         .cornerRadius(10)
                                         .font(.system(size: 14))
                                         .autocapitalization(.none)
@@ -387,7 +398,11 @@ struct MainActivity: View {
                             Button(action: {
                                 
                                 for i in bottomSheetVM.chipSortArray.indices {
-                                    bottomSheetVM.chipSortArrayTemp[i].isSelected = bottomSheetVM.chipSortArray[i].isSelected
+                                    if isEN {
+                                        bottomSheetVM.chipSortArrayTemp[i].isSelected = bottomSheetVM.chipSortArrayEN[i].isSelected
+                                    } else {
+                                        bottomSheetVM.chipSortArrayTemp[i].isSelected = bottomSheetVM.chipSortArray[i].isSelected
+                                    }
                                 }
                                 
                                 for i in bottomSheetVM.chipCategoryArray.indices {
@@ -401,14 +416,25 @@ struct MainActivity: View {
                                 
                                 
                                 for i in bottomSheetVM.chipSortArray.indices {
-                                    if bottomSheetVM.chipSortArray[i].isSelected == true {
-                                        bottomSheetVM.selectedSortChip = bottomSheetVM.chipSortArray[i].titleKey
+                                    if isEN {
+                                        if bottomSheetVM.chipSortArrayEN[i].isSelected == true {
+                                            bottomSheetVM.selectedSortChip = bottomSheetVM.chipSortArrayEN[i].titleKey
+                                        } else {
+                                            if bottomSheetReset == true {
+                                                bottomSheetVM.selectedSortChip = nil
+                                            }
+                                        }
                                     } else {
-                                        if bottomSheetReset == true {
-                                            bottomSheetVM.selectedSortChip = nil
+                                        if bottomSheetVM.chipSortArray[i].isSelected == true {
+                                            bottomSheetVM.selectedSortChip = bottomSheetVM.chipSortArray[i].titleKey
+                                        } else {
+                                            if bottomSheetReset == true {
+                                                bottomSheetVM.selectedSortChip = nil
+                                            }
                                         }
                                     }
                                 }
+                                
                                 for i in bottomSheetVM.chipCategoryArray.indices {
                                     if bottomSheetVM.chipCategoryArray[i].isSelected == true {
                                         bottomSheetVM.selectedCategoryChip = bottomSheetVM.chipCategoryArray[i].titleKey
@@ -424,11 +450,11 @@ struct MainActivity: View {
                                 filterProducts = true
                                 
                             }, label: {
-                                Text("Tampilkan Produk").foregroundColor(.white).bold().frame(maxWidth: .infinity)
+                                Text(isEN ? "Show Products" :"Tampilkan Produk").foregroundColor(.white).bold().frame(maxWidth: .infinity)
                             }).padding().background( RoundedRectangle(cornerRadius: 100).fill(Color(hex: "#6750A4"))).frame(maxWidth: .infinity).padding(.vertical, 8).padding(.horizontal, 12).padding(.bottom, 16)
                             
                         }.padding(.horizontal, 12)
-                    }.background(RoundedRectangle(cornerRadius:24).fill(Color.white))
+                    }.background(RoundedRectangle(cornerRadius:24).fill(isDark ? .black :Color.white))
                 }
                 .frame(maxWidth: .infinity, alignment: .bottom)
                 .ignoresSafeArea()
@@ -465,6 +491,9 @@ struct MainActivity: View {
 
 struct ChipView: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @Binding var titleKey: String
     @Binding var isSelected: Bool?
     @StateObject var bottomSheetVM: BottomSheetViewModel
@@ -476,20 +505,26 @@ struct ChipView: View {
         }
         .padding(.vertical, 4)
         .padding(.horizontal, 8)
-        .foregroundColor(isSelected! ? .black : Color(hex: "#49454F"))
-        .background(isSelected! ? Color(hex: "#E8DEF8") : Color.white)
+        .foregroundColor(isSelected! ? .black : isDark ? .white :Color(hex: "#49454F"))
+        .background(isSelected! ? Color(hex: "#E8DEF8") : isDark ? .black :Color.white)
         .cornerRadius(8)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(isSelected! ? Color.clear : Color(hex: "#79747E"), lineWidth: 1.5)
+                .stroke(isSelected! ? Color.clear : isDark ? .white :Color(hex: "#79747E"), lineWidth: 1.5)
             
         )
         .onTapGesture {
             
             if chipType == "sort" {
                 for i in bottomSheetVM.chipSortArray.indices {
-                    if bottomSheetVM.chipSortArray[i].isSelected == true {
-                        bottomSheetVM.chipSortArray[i].isSelected?.toggle()
+                    if isEN {
+                        if bottomSheetVM.chipSortArrayEN[i].isSelected == true {
+                            bottomSheetVM.chipSortArrayEN[i].isSelected?.toggle()
+                        }
+                    } else {
+                        if bottomSheetVM.chipSortArray[i].isSelected == true {
+                            bottomSheetVM.chipSortArray[i].isSelected?.toggle()
+                        }
                     }
                 }
             } else {

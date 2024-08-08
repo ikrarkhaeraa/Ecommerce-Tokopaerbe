@@ -22,12 +22,19 @@ class BottomSheetViewModel: ObservableObject {
         ChipModel(isSelected: false, titleKey: "Harga Tertinggi")
     ]
     
+    @Published var chipSortArrayEN: [ChipModel] = [
+        ChipModel(isSelected: false, titleKey: "Review"),
+        ChipModel(isSelected: false, titleKey: "Sales"),
+        ChipModel(isSelected: false, titleKey: "Lowest Price"),
+        ChipModel(isSelected: false, titleKey: "Highest Price")
+    ]
+    
     @Published var chipCategoryArray: [ChipModel] = [
         ChipModel(isSelected: false, titleKey: "Apple"),
         ChipModel(isSelected: false, titleKey: "Asus"),
         ChipModel(isSelected: false, titleKey: "Dell"),
         ChipModel(isSelected: false, titleKey: "Lenovo")
-    ]
+    ] 
     
     @Published var selectedSortChip: String? = nil
     @Published var selectedCategoryChip: String? = nil

@@ -9,6 +9,9 @@ import SwiftUI
 
 struct TransactionScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @State var isLoading: Bool = true
     @State var isExpired: Bool = false
     @State var showExpiredAlert: Bool = false
@@ -28,10 +31,10 @@ struct TransactionScreen: View {
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         } else {
-            if transactionResponse!.isEmpty {
+            if transactionResponse == nil {
                 VStack {
                     Image(uiImage: UIImage.errorState)
-                    Text("Empty").font(.system(size: 32)).bold()
+                    Text("Empty").font(.system(size: 32)).foregroundColor(isDark ? .white : .black).bold()
                     Text("\(errorMessageAlert)")
                     Button(action: {
                         getTransactionHistory()
@@ -47,13 +50,15 @@ struct TransactionScreen: View {
                                 
                                 HStack {
                                     Image(uiImage: .shoppingBag)
+                                        .renderingMode(isDark ? .template : .original)
+                                        .foregroundColor(isDark ? .white : nil)
                                     VStack {
-                                        Text("Belanja").font(.system(size: 10)).fontWeight(.bold).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                                        Text(isEN ? "Shopping" :"Belanja").font(.system(size: 10)).fontWeight(.bold).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                                         Text("\(transactionResponse![i].date)").font(.system(size: 10)).frame(maxWidth: .infinity, alignment: .leading)
                                     }
                                     
                                     ZStack {
-                                        Text("Selesai").font(.system(size: 10)).fontWeight(.bold).foregroundColor(Color(hex: "#6750A4")).padding(4.0).background(Color(hex: "#EADDFF")).cornerRadius(4.0)
+                                        Text(isEN ? "Done" :"Selesai").font(.system(size: 10)).fontWeight(.bold).foregroundColor(isDark ? .white :Color(hex: "#6750A4")).padding(4.0).background(Color(hex: "#EADDFF")).cornerRadius(4.0)
                                     }
                                 }
                                 
@@ -65,28 +70,28 @@ struct TransactionScreen: View {
                                             .frame(maxWidth: 60, maxHeight: 60)
                                         
                                         VStack {
-                                            Text("\(transactionResponse![i].name)").font(.system(size: 14)).foregroundColor(Color(hex: "#49454F")).fontWeight(.medium).lineLimit(1)
+                                            Text("\(transactionResponse![i].name)").font(.system(size: 14)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).fontWeight(.medium).lineLimit(1)
                                                 .truncationMode(.tail)
                                                 .fixedSize(horizontal: false, vertical: true)
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                                 .padding(.trailing)
                                             
-                                            Text("\(transactionResponse![i].items.count) barang").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                            Text(isEN ? "\(transactionResponse![i].items.count) items" :"\(transactionResponse![i].items.count) barang").font(.system(size: 10)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                                 .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 2)
                                         }
                                     }
                                     
                                     HStack {
                                         VStack {
-                                            Text("Total Belanja").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                            Text(isEN ? "Total Price" :"Total Belanja").font(.system(size: 10)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                                 .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 4).padding(.bottom, 2)
                                             
-                                            Text("Rp\(transactionResponse![i].total)").font(.system(size: 14)).foregroundColor(Color(hex: "#49454F")).fontWeight(.bold)
+                                            Text("Rp\(transactionResponse![i].total)").font(.system(size: 14)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).fontWeight(.bold)
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                         }
                                         
                                         if transactionResponse![i].review == ""  {
-                                            let _ = print("test")
+                    
                                             Button(action: {
                                                 chosenItem = i
                                                 goToRating = true
