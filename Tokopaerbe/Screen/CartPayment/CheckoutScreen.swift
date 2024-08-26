@@ -10,6 +10,9 @@ import CoreData
 
 struct CheckoutScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @Environment(\.presentationMode) var presentationMode
     @FetchRequest(
         entity: CartEntity.entity(),
@@ -34,7 +37,9 @@ struct CheckoutScreen: View {
     @State private var goToPayment: Bool = false
     @State private var goToSuccessPayment: Bool = false
     @State private var imagePayment: Image = Image(uiImage: .addCard)
-    @State private var namePayment: String = "Pilih Pembayaran"
+    @State private var namePayment: String = ""
+    @State private var imagePaymentDefault: Image = Image(uiImage: .addCard)
+    @State private var namePaymentDefault: String = "Pilih Pembayaran"
     @State private var fulfillmentResponse: FulfillmentResponse? = nil
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     var totalPrice: Int {  checkoutCarts.filter { $0.productChecked }
@@ -47,23 +52,25 @@ struct CheckoutScreen: View {
                 
                 VStack {
                     HStack {
-                        Image(uiImage: .arrowleft).padding().onTapGesture {
+                        Image(uiImage: .arrowleft)
+                            .renderingMode(isDark ? .template : .original)
+                            .foregroundColor(isDark ? .white : nil)
+                            .padding().onTapGesture {
                             self.presentationMode.wrappedValue.dismiss()
-                        }
+                                }
                         
                         Text("Checkout").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 22))
                         
                     }.frame(maxWidth: .infinity, alignment: .leading)
                     
                     Divider()
-                    Text("Barang yang dibeli").font(.system(size: 16)).fontWeight(.medium).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding()
+                    Text(isEN ? "Purchased Item" :"Barang yang dibeli").font(.system(size: 16)).fontWeight(.medium).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding()
                 }.getSize {
                     appBarViewSize = $0
                 }
                 
                 Text("").background(Color.white)
                 
-            
                 ScrollView {
                     
                     if itemfromDetail != nil {
@@ -71,20 +78,20 @@ struct CheckoutScreen: View {
                             ImageLoader(contentMode: .constant("fit"), urlString: (itemfromDetail!.image[0])).frame(maxWidth: 80, maxHeight: 80).background(RoundedRectangle(cornerRadius: 8).foregroundColor(.white))
                             
                             VStack {
-                                Text("\(itemfromDetail!.productName)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
+                                Text("\(itemfromDetail!.productName)").font(.system(size: 14)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                     .fixedSize(horizontal: false, vertical: true)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
-                                Text("\(chosenVariantFromDetail)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                Text("\(chosenVariantFromDetail)").font(.system(size: 10)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
-                                Text("Stok \(itemfromDetail!.stock)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                Text("Stok \(itemfromDetail!.stock)").font(.system(size: 10)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
                                 HStack {
-                                    Text("Stok \(priceFromDetail)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
+                                    Text("Stok \(priceFromDetail)").font(.system(size: 14)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                         .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
                                     
                                 }.frame(maxWidth: .infinity)
@@ -103,20 +110,20 @@ struct CheckoutScreen: View {
                                 ImageLoader(contentMode: .constant("fit"), urlString: checkoutCarts[i].productImage!).frame(maxWidth: 80, maxHeight: 80).background(RoundedRectangle(cornerRadius: 8).foregroundColor(.white))
                                 
                                 VStack {
-                                    Text("\(checkoutCarts[i].productName!)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
+                                    Text("\(checkoutCarts[i].productName!)").font(.system(size: 14)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                         .lineLimit(1)
                                         .truncationMode(.tail)
                                         .fixedSize(horizontal: false, vertical: true)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     
-                                    Text("\(checkoutCarts[i].productVariant!)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                    Text("\(checkoutCarts[i].productVariant!)").font(.system(size: 10)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     
-                                    Text("Stok \(checkoutCarts[i].productStock)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                    Text("Stok \(checkoutCarts[i].productStock)").font(.system(size: 10)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     
                                     HStack {
-                                        Text("Stok \(checkoutCarts[i].productPrice)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
+                                        Text("Stok \(checkoutCarts[i].productPrice)").font(.system(size: 14)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                             .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
                                         
                                     }.frame(maxWidth: .infinity)
@@ -124,13 +131,18 @@ struct CheckoutScreen: View {
                                     
                                 }.padding(.horizontal, 2).frame(maxWidth: .infinity, alignment: .leading)
                                 
+                            }.onAppear {
+                                scrollViewSize.height += 126
                             }.padding()
                             
                             Divider()
                             
-                        }.getSize {scrollViewSize = $0}
+                            let _ = Log.d("scroll size: \(scrollViewSize)")
+                           
+                            
+                        }
+//                        .getSize {scrollViewSize = $0}
                     }
-                    
 
                 }
                 .frame(maxHeight: calculateScrollViewHeight(proxy: proxy))
@@ -139,15 +151,27 @@ struct CheckoutScreen: View {
                 VStack {
                     Rectangle().foregroundColor(Color(hex: "#D9D9D9")).frame(maxWidth: .infinity, maxHeight: 4)
                     
-                    Text("Pembayaran").font(.system(size: 16)).fontWeight(.medium).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding()
+                    Text(isEN ? "Payment" :"Pembayaran").font(.system(size: 16)).fontWeight(.medium).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding()
                     
                     HStack {
                         HStack {
-                            imagePayment
-                            Text("\(namePayment)").font(.system(size: 14)).foregroundColor(Color(hex: "#49454F")).fontWeight(.medium).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 4)
+                            
+                            let _ = Log.d("cek Image : \(imagePayment)")
+                            if namePayment.isEmpty {
+                                imagePayment
+                                    .renderingMode(isDark ? .template : .original)
+                                    .foregroundColor(isDark ? .white : nil)
+                            } else {
+                                imagePayment
+                            }
+            
+                            
+                            Text(namePayment.isEmpty ? isEN ? "Choose Payment Method" : "\(namePaymentDefault)" : "\(namePayment)").font(.system(size: 14)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).fontWeight(.medium).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 4)
                             Image(uiImage: .arrowForwardIos)
+                                .renderingMode(isDark ? .template : .original)
+                                .foregroundColor(isDark ? .white : nil)
                         }.frame(maxWidth: .infinity, alignment: .leading).padding()
-                    }.background(Color.white)
+                    }.background(isDark ? .black :Color.white)
                         .cornerRadius(8)
                         .shadow(color: .gray, radius: 2, x: 0, y: 2)
                         .padding(.horizontal)
@@ -167,12 +191,12 @@ struct CheckoutScreen: View {
                     
                     HStack {
                         VStack {
-                            Text("Total Bayar").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                            Text(isEN ? "Total Payment" :"Total Bayar").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                             
                             if itemfromDetail != nil {
-                                Text("Rp\(priceFromDetail)").font(.system(size: 16)).bold().foregroundColor(Color(hex: "#49454F")).padding(.top, 2).frame(maxWidth: .infinity, alignment: .leading)
+                                Text("Rp\(priceFromDetail)").font(.system(size: 16)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F")).padding(.top, 2).frame(maxWidth: .infinity, alignment: .leading)
                             } else {
-                                Text("Rp\(totalPrice)").font(.system(size: 16)).bold().foregroundColor(Color(hex: "#49454F")).padding(.top, 2).frame(maxWidth: .infinity, alignment: .leading)
+                                Text("Rp\(totalPrice)").font(.system(size: 16)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F")).padding(.top, 2).frame(maxWidth: .infinity, alignment: .leading)
                             }
                             
                         }.frame(maxWidth: .infinity, alignment: .leading)
@@ -186,7 +210,7 @@ struct CheckoutScreen: View {
                                     isLoading = true
                                     fulfillmentProcess()
                                 }, label: {
-                                    Text("Bayar")
+                                    Text(isEN ? "Pay" :"Bayar")
                                         .font(.system(size: 14))
                                         .foregroundColor(.white)
                                         .padding()
@@ -199,7 +223,7 @@ struct CheckoutScreen: View {
                             
                         } else {
                             Button(action: {}, label: {
-                                Text("Bayar")
+                                Text(isEN ? "Pay" :"Bayar")
                                     .font(.system(size: 14))
                                     .foregroundColor(.white)
                                     .padding()

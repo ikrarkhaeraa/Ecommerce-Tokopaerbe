@@ -11,6 +11,9 @@ import CoreData
 
 struct SuccessPaymentScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @Environment(\.managedObjectContext) var viewContext
     @FetchRequest(sortDescriptors: []) private var carts: FetchedResults<CartEntity>
     
@@ -43,7 +46,7 @@ struct SuccessPaymentScreen: View {
                     
                     ZStack {
                         VStack {
-                            Text("Pembayaran Berhasil").font(.system(size: 24)).fontWeight(.semibold).foregroundColor(Color(hex: "#6750A4")).padding(.top, 60)
+                            Text(isEN ? "Payment Success" :"Pembayaran Berhasil").font(.system(size: 24)).fontWeight(.semibold).foregroundColor(isDark ? .white :Color(hex: "#6750A4")).padding(.top, 60)
                             
                             HStack{
                                 ForEach(0...4, id: \.self) { i in
@@ -51,12 +54,12 @@ struct SuccessPaymentScreen: View {
                                 }
                             }.frame(maxWidth: .infinity, alignment: .center).padding(.top, 8)
                             
-                            Text("Beri ulasan").font(.system(size: 14)).fontWeight(.medium).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal).padding(.top, 32)
+                            Text(isEN ? "Give a review" :"Beri ulasan").font(.system(size: 14)).fontWeight(.medium).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal).padding(.top, 32)
                             
                             TextEditor(text: $reviewText)
                                 .frame(height: 100)
                                 .padding(.all, 4)
-                                .background(RoundedRectangle(cornerRadius: 8).stroke(Color.black, lineWidth: 2))
+                                .background(RoundedRectangle(cornerRadius: 8).stroke(isDark ? .white :Color.black, lineWidth: 2))
                                 .cornerRadius(10)
                                 .padding()
                                 .font(.system(size: 16))
@@ -64,7 +67,7 @@ struct SuccessPaymentScreen: View {
 
                             
                         }.frame(maxWidth: .infinity)
-                            .background(Color.white)
+                            .background(isDark ? .black :Color.white)
                             .cornerRadius(8)
                             .padding(.top, 24)
                             .padding(.horizontal, 20)
@@ -79,40 +82,40 @@ struct SuccessPaymentScreen: View {
                 }
                 
                 VStack {
-                    Text("Detail Produk").font(.system(size: 14)).fontWeight(.medium).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                    Text(isEN ? "Product Detail" :"Detail Produk").font(.system(size: 14)).fontWeight(.medium).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                     
                     HStack {
-                        Text("ID Transaksi").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                        Text(isEN ? "Transaction ID" :"ID Transaksi").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                         
                         Text("\(fulfillmentResponse!.invoiceId)").font(.system(size: 12)).fontWeight(.medium)
                     }.padding(.top)
                     
                     HStack {
-                        Text("Status").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                        Text("Status").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                         
                         Text("\(fulfillmentResponse!.status)").font(.system(size: 12)).fontWeight(.medium)
                     }.padding(.top, 4)
                     
                     HStack {
-                        Text("Tanggal").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                        Text(isEN ? "Date" :"Tanggal").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                         
                         Text("\(fulfillmentResponse!.date)").font(.system(size: 12)).fontWeight(.medium)
                     }.padding(.top, 4)
                     
                     HStack {
-                        Text("Waktu").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                        Text(isEN ? "Time" :"Waktu").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                         
                         Text("\(fulfillmentResponse!.time)").font(.system(size: 12)).fontWeight(.medium)
                     }.padding(.top, 4)
                     
                     HStack {
-                        Text("Metode Pembayaran").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                        Text(isEN ? "Payment Method" :"Metode Pembayaran").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                         
                         Text("\(fulfillmentResponse!.payment)").font(.system(size: 12)).fontWeight(.medium)
                     }.padding(.top, 4)
                     
                     HStack {
-                        Text("Total Pembayaran").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                        Text(isEN ? "Total Payment" :"Total Pembayaran").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                         
                         Text("\(fulfillmentResponse!.total)").font(.system(size: 12)).fontWeight(.medium)
                     }.padding(.top, 4)
@@ -131,7 +134,7 @@ struct SuccessPaymentScreen: View {
                     postRating(fulfillmentResponse: fulfillmentResponse!)
                     isLoading = true
                 }, label: {
-                    Text("Selesai")
+                    Text(isEN ? "Done" :"Selesai")
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -209,8 +212,8 @@ struct SuccessPaymentScreen: View {
     
     func makingNotification() {
         let content = UNMutableNotificationContent()
-        content.title = "Transaksi Berhasil"
-        content.subtitle = "Transaksi anda dengan ID \(fulfillmentResponse!.invoiceId) sedang di proses oleh penjual, mohon ditunggu untuk update selanjutnya di aplikasi. Sambil menunggu, anda bisa cari barang lain terlebih dahulu"
+        content.title = isEN ? "Transaction Success" :"Transaksi Berhasil"
+        content.subtitle = isEN ? "Your transaction with ID \(fulfillmentResponse!.invoiceId) is being process by the seller, please kindly wait for the next update. While waiting, you can looking for another items." :"Transaksi anda dengan ID \(fulfillmentResponse!.invoiceId) sedang di proses oleh penjual, mohon ditunggu untuk update selanjutnya di aplikasi. Sambil menunggu, anda bisa cari barang lain terlebih dahulu"
         content.sound = UNNotificationSound.default
         
         

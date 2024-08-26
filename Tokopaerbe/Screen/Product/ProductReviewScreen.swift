@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ProductReviewScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @State var product: Product
     @State var goBack: Bool = false
     @State var isLoading: Bool = true
@@ -22,11 +25,14 @@ struct ProductReviewScreen: View {
     var body: some View {
         VStack {
             HStack {
-                Image(uiImage: .arrowleft).padding().onTapGesture {
+                Image(uiImage: .arrowleft)
+                    .renderingMode(isDark ? .template : .original)
+                    .foregroundColor(isDark ? .white : nil)
+                    .padding().onTapGesture {
                     goBack = true
                 }
                 
-                Text("Ulasan Pembeli").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 22))
+                Text(isEN ?  "Buyer Review" : "Ulasan Pembeli").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 22))
                 
             }.frame(maxWidth: .infinity, alignment: .top)
             Divider()
@@ -49,7 +55,7 @@ struct ProductReviewScreen: View {
                                         }
                                         
                                         VStack {
-                                            Text("\(data.userName)").font(.system(size: 12)).bold().foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                                            Text("\(data.userName)").font(.system(size: 12)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                                             HStack {
                                                 ForEach(1...data.userRating, id: \.self) { i in
                                                     if (i > 1) {
@@ -62,7 +68,7 @@ struct ProductReviewScreen: View {
                                         }
                                     }.padding(.top)
                                     
-                                    Text("\(data.userReview)").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom).padding(.top, 4)
+                                    Text("\(data.userReview)").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.bottom).padding(.top, 4)
                                 }.padding(.leading)
                                 
                                 Divider()

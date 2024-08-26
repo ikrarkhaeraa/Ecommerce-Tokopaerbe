@@ -10,6 +10,9 @@ import CoreData
 
 struct CartScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @Environment(\.presentationMode) var presentationMode
     
     @FetchRequest(sortDescriptors: []) private var carts: FetchedResults<CartEntity>
@@ -25,11 +28,15 @@ struct CartScreen: View {
     var body: some View {
         VStack {
             HStack {
-                Image(uiImage: .arrowleft).padding().onTapGesture {
+                Image(uiImage: .arrowleft)
+                    .renderingMode(isDark ? .template : .original)
+                    .foregroundColor(isDark ? .white : nil)
+                    .padding()
+                    .onTapGesture {
                     self.presentationMode.wrappedValue.dismiss()
                 }
                 
-                Text("Keranjang").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 22))
+                Text(isEN ? "Cart" :"Keranjang").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 22))
                 
             }.frame(maxWidth: .infinity, alignment: .leading)
             
@@ -38,10 +45,10 @@ struct CartScreen: View {
             if isShowAppBarChild {
                 HStack {
                     CheckBoxAllView(checked: $isCheckedAll, carts: carts)
-                    Text("Pilih Semua").font(.system(size: 14)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 4)
+                    Text(isEN ? "Choose All" :"Pilih Semua").font(.system(size: 14)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 4)
                     
                     if carts.contains(where: {$0.productChecked == true}) {
-                        Text("Hapus").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#6750A4")).onTapGesture {
+                        Text(isEN ? "Delete" :"Hapus").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#6750A4")).onTapGesture {
                             deleteCartItem()
                         }
                     }
@@ -55,7 +62,7 @@ struct CartScreen: View {
                 VStack {
                     Image(uiImage: UIImage.errorState)
                     Text("Empty").font(.system(size: 32)).bold().padding(.bottom, 2)
-                    Text("Your requested data is unavailable").font(.system(size: 16)).foregroundColor(Color(hex: "#1D1B20"))
+                    Text("Your requested data is unavailable").font(.system(size: 16)).foregroundColor(isDark ? .white :Color(hex: "#1D1B20"))
                 }.frame(maxWidth: .infinity ,maxHeight: .infinity, alignment: .center).onAppear {
                     isShowAppBarChild = false
                 }
@@ -71,20 +78,20 @@ struct CartScreen: View {
                             ImageLoader(contentMode: .constant("fit"), urlString: carts[i].productImage!).frame(maxWidth: 80, maxHeight: 80).background(RoundedRectangle(cornerRadius: 8).foregroundColor(.white))
                             
                             VStack {
-                                Text("\(carts[i].productName!)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
+                                Text("\(carts[i].productName!)").font(.system(size: 14)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                     .fixedSize(horizontal: false, vertical: true)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
-                                Text("\(carts[i].productVariant!)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                Text("\(carts[i].productVariant!)").font(.system(size: 10)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
-                                Text("Stok \(carts[i].productStock)").font(.system(size: 10)).foregroundColor(Color(hex: "#49454F"))
+                                Text("Stok \(carts[i].productStock)").font(.system(size: 10)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 
                                 HStack {
-                                    Text("Stok \(carts[i].productPrice)").font(.system(size: 14)).bold().foregroundColor(Color(hex: "#49454F"))
+                                    Text("Stok \(carts[i].productPrice)").font(.system(size: 14)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                         .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
                                     
                                     Image(uiImage: .delete20PxBlack).padding(.top, 4).onTapGesture {
@@ -110,9 +117,9 @@ struct CartScreen: View {
                 
                 HStack {
                     VStack {
-                        Text("Total Bayar").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                        Text(isEN ? "Total Payment" :"Total Bayar").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                         
-                        Text("Rp\(totalPrice)").font(.system(size: 16)).bold().foregroundColor(Color(hex: "#49454F")).padding(.top, 2).frame(maxWidth: .infinity, alignment: .leading)
+                        Text("Rp\(totalPrice)").font(.system(size: 16)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F")).padding(.top, 2).frame(maxWidth: .infinity, alignment: .leading)
                     }.frame(maxWidth: .infinity, alignment: .leading)
                     
                     
@@ -120,7 +127,7 @@ struct CartScreen: View {
                         Button(action: {
                             goToCheckout = true
                         }, label: {
-                            Text("Beli")
+                            Text(isEN ? "Buy" :"Beli")
                                 .font(.system(size: 14))
                                 .foregroundColor(.white)
                                 .padding()
@@ -155,6 +162,9 @@ struct CartScreen: View {
     
     struct ToggleQuantity: View {
         
+        @AppStorage("isDark") private var isDark: Bool = false
+        @AppStorage("isEN") private var isEN: Bool = false
+        
         var iteration: Int
         var carts: FetchedResults<CartEntity>
         var viewContext: NSManagedObjectContext
@@ -163,7 +173,7 @@ struct CartScreen: View {
         var body: some View {
             HStack {
                 HStack {
-                    Text("-").foregroundColor(Color(hex: "#1D1B20")).padding(.bottom, 2).padding(.leading, 8).onTapGesture {
+                    Text("-").foregroundColor(isDark ? .white :Color(hex: "#1D1B20")).padding(.bottom, 2).padding(.leading, 8).onTapGesture {
                         if carts[iteration].productQuantity == 1 {
                             deleteCartItemById(carts[iteration].productId!, carts[iteration].productVariant!)
                         } else {
@@ -176,8 +186,8 @@ struct CartScreen: View {
                             }
                         }
                     }
-                    Text("\(carts[iteration].productQuantity)").bold().foregroundColor(Color(hex: "#1D1B20")).font(.system(size: 14)).padding(.horizontal, 8)
-                    Text("+").foregroundColor(Color(hex: "#1D1B20")).padding(.bottom, 2).padding(.trailing, 8).onTapGesture {
+                    Text("\(carts[iteration].productQuantity)").bold().foregroundColor(isDark  ? .white :Color(hex: "#1D1B20")).font(.system(size: 14)).padding(.horizontal, 8)
+                    Text("+").foregroundColor(isDark ? .white :Color(hex: "#1D1B20")).padding(.bottom, 2).padding(.trailing, 8).onTapGesture {
                         if carts[iteration].productQuantity < carts[iteration].productStock {
                             do {
                                 carts[iteration].productQuantity += 1

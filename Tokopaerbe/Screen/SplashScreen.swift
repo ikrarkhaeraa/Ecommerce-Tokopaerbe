@@ -9,6 +9,9 @@ import SwiftUI
 
 struct SplashScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @EnvironmentObject var deepLinkManager: DeepLinkManager
     @State private var isActive: Bool = false
     
@@ -31,7 +34,8 @@ struct SplashScreen: View {
                     isActive: $isActive
                 ) {
                     //                Image(uiImage: UIImage(named: "splash_screen")!)
-                    GIFImage(name: "splash_screen").frame(width: 300, height: 300)
+                    GIFImage(name: "splash_screen_nobg")
+                        .frame(width: 300, height: 300)
                 }
                 
             }.onAppear {

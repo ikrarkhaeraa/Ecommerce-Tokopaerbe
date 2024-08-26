@@ -11,6 +11,9 @@ import AlertToast
 
 struct ProductDetailScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @State var product: Product? = nil
     @State var goBack: Bool = false
     @State var goToReview: Bool = false
@@ -45,11 +48,15 @@ struct ProductDetailScreen: View {
         VStack {
         
             HStack {
-                Image(uiImage: .arrowleft).padding().onTapGesture {
+                Image(uiImage: .arrowleft)
+                    .renderingMode(isDark ? .template : .original)
+                    .foregroundColor(isDark ? .white : nil)
+                    .padding()
+                    .onTapGesture {
                     goBack = true
                 }
                 
-                Text("Detail Produk").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 22))
+                Text(isEN ? "Product Detail" :"Detail Produk").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 22))
                 
             }.frame(maxWidth: .infinity, alignment: .leading)
             Divider()
@@ -94,7 +101,7 @@ struct ProductDetailScreen: View {
                     VStack {
                         
                         HStack {
-                            Text("Rp\(productDetailResponse!.productPrice + choosenVariantPrice)").foregroundColor(Color(hex: "#49454F")).font(.system(size: 20)).bold().frame(maxWidth: .infinity, alignment: .leading).padding(.top, 12)
+                            Text("Rp\(productDetailResponse!.productPrice + choosenVariantPrice)").foregroundColor(isDark ? .white :Color(hex: "#49454F")).font(.system(size: 20)).bold().frame(maxWidth: .infinity, alignment: .leading).padding(.top, 12)
                             
                             Image(uiImage: .share).padding(.trailing, 8).padding(.top, 4).onTapGesture {
                                 isShowingShareSheet = true
@@ -102,13 +109,19 @@ struct ProductDetailScreen: View {
             
                             
                             if !isSaved {
-                                Image(uiImage: .favoriteBorder).padding(.trailing).padding(.top, 4).onTapGesture {
+                                Image(uiImage: .favoriteBorder)
+                                    .renderingMode(isDark ? .template : .original)
+                                    .foregroundColor(isDark ? .white : nil)
+                                    .padding(.trailing).padding(.top, 4).onTapGesture {
                                     isSaved = true
                                     saveProduct(id: productDetailResponse!.productId, name: productDetailResponse!.productName ,image: productDetailResponse!.image[0] ,price: productDetailResponse!.productPrice + choosenVariantPrice, store: productDetailResponse!.store, rating: productDetailResponse!.productRating, sale: productDetailResponse!.sale, stock: productDetailResponse!.stock)
                                     let _ = Log.d("saved state : \(isSaved)")
                                 }
                             } else {
-                                Image(uiImage: .favoriteFull).padding(.trailing).padding(.top, 4).onTapGesture {
+                                Image(uiImage: .favoriteFull)
+                                    .renderingMode(isDark ? .template : .original)
+                                    .foregroundColor(isDark ? .white : nil)
+                                    .padding(.trailing).padding(.top, 4).onTapGesture {
                                     isSaved = false
                                     unSaveProduct(withId: productDetailResponse!.productId)
                                     let _ = Log.d("saved state : \(isSaved)")
@@ -119,16 +132,18 @@ struct ProductDetailScreen: View {
                             isSaved = favorites.contains { $0.productId == productDetailResponse?.productId }
                         }
                         
-                        Text("\(productDetailResponse!.productName)").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 14)).foregroundColor(Color(hex: "#49454F")).padding(.top, 8)
+                        Text("\(productDetailResponse!.productName)").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 14)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).padding(.top, 8)
                         
                         HStack {
-                            Text("Terjual \(productDetailResponse!.sale)").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F"))
+                            Text(isEN ? "Sold \(productDetailResponse!.sale)" :"Terjual \(productDetailResponse!.sale)").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                             
                             ZStack {
                                 HStack {
                                     Image(uiImage: .star)
-                                    Text("\(productDetailResponse!.totalRating)").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F"))
-                                    Text("(\(productDetailResponse!.totalReview))").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F"))
+                                        .renderingMode(isDark ? .template : .original)
+                                        .foregroundColor(isDark ? .white : nil)
+                                    Text("\(productDetailResponse!.totalRating)").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
+                                    Text("(\(productDetailResponse!.totalReview))").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                 }.padding(.horizontal, 4).padding(.vertical, 2)
                             } .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color(hex: "#79747E"), lineWidth: 1))
                             
@@ -140,7 +155,7 @@ struct ProductDetailScreen: View {
                     
                     VStack {
                         
-                        Text("Pilih Varian").font(.system(size: 16)).foregroundColor(Color(hex: "#49454F")).bold().frame(maxWidth: .infinity, alignment: .leading)
+                        Text(isEN ? "Choose Variant" :"Pilih Varian").font(.system(size: 16)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).bold().frame(maxWidth: .infinity, alignment: .leading)
                         
                         HStack {
                             
@@ -178,8 +193,8 @@ struct ProductDetailScreen: View {
                     Divider().padding(.vertical, 4)
                     
                     VStack {
-                        Text("Deskripsi Produk").font(.system(size: 16)).bold().foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
-                        Text("\(productDetailResponse!.description)").font(.system(size: 14)).foregroundColor(Color(hex: "#49454F")).padding(.top, 8)
+                        Text(isEN ? "Product Description" :"Deskripsi Produk").font(.system(size: 16)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                        Text("\(productDetailResponse!.description)").font(.system(size: 14)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).padding(.top, 8)
                     }.padding(.leading)
                     
                     Divider().padding(.vertical, 4)
@@ -187,9 +202,9 @@ struct ProductDetailScreen: View {
                     VStack {
                         
                         HStack {
-                            Text("Ulasan Pembeli").font(.system(size: 16)).bold().foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                            Text(isEN ? "Buyer Review" :"Ulasan Pembeli").font(.system(size: 16)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                             
-                            Text("Lihat Semua").font(.system(size: 12)).bold().foregroundColor(Color(hex: "#6750A4")).padding(.trailing).onTapGesture {
+                            Text(isEN ? "See all" :"Lihat Semua").font(.system(size: 12)).bold().foregroundColor(Color(hex: "#6750A4")).padding(.trailing).onTapGesture {
                                 goToReview = true
                             }
                         }
@@ -198,16 +213,18 @@ struct ProductDetailScreen: View {
                             
                             HStack {
                                 Image(uiImage: .starBig)
-                                Text("\(productDetailResponse!.productRating)").font(.system(size: 20)).bold().foregroundColor(Color(hex: "#49454F"))
-                                Text("/5.0").font(.system(size: 16)).foregroundColor(Color(hex: "#49454F"))
+                                    .renderingMode(isDark ? .template : .original)
+                                    .foregroundColor(isDark ? .white : nil)
+                                Text("\(productDetailResponse!.productRating)").font(.system(size: 20)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F"))
+                                Text("/5.0").font(.system(size: 16)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                             }
                             
                             VStack(alignment: .leading) {
-                                Text("\(productDetailResponse!.totalSatisfaction)% pembeli merasa puas").font(.system(size: 12)).bold().foregroundColor(Color(hex: "#49454F"))
+                                Text(isEN ? "\(productDetailResponse!.totalSatisfaction)% buyer felt satisfied" :"\(productDetailResponse!.totalSatisfaction)% pembeli merasa puas").font(.system(size: 12)).bold().foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                 HStack {
-                                    Text("\(productDetailResponse!.totalRating) rating").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F"))
-                                    Text(".").padding(.bottom,8).font(.system(size: 12)).foregroundColor(Color(hex: "#49454F"))
-                                    Text("\(productDetailResponse!.totalReview) ulasan").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F"))
+                                    Text("\(productDetailResponse!.totalRating) rating").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
+                                    Text(".").padding(.bottom,8).font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
+                                    Text(isEN ? "\(productDetailResponse!.totalReview) review" :"\(productDetailResponse!.totalReview) ulasan").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                 }
                             }.frame(maxWidth: .infinity).padding(.trailing)
                         }
@@ -222,7 +239,7 @@ struct ProductDetailScreen: View {
                         Button(action: {
                             goToCheckout = true
                         }, label: {
-                            Text("Beli Langsung")
+                            Text(isEN ? "Buy" :"Beli Langsung")
                                 .foregroundColor(Color(hex: "#6750A4"))
                                 .frame(maxWidth: .infinity)
                                 .padding()
@@ -234,7 +251,7 @@ struct ProductDetailScreen: View {
                         Button(action: {
                             handleAddToCart()
                         }, label: {
-                               Text("+ Keranjang")
+                            Text(isEN ? "+ Cart" :"+ Keranjang")
                                    .foregroundColor(.white)
                                    .frame(maxWidth: .infinity)
                                    .padding()
@@ -243,7 +260,7 @@ struct ProductDetailScreen: View {
                         }).padding(.trailing, 10).padding(.vertical, 10).padding(.leading, 5)
                     }
                     
-                }.background(Color.white).frame(maxHeight: 40)
+                }.background(isDark ? .black :Color.white).frame(maxHeight: 40)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -262,10 +279,10 @@ struct ProductDetailScreen: View {
                 .background(Color.clear)
         }
         .toast(isPresenting: $showToastSuccess) {
-            AlertToast(type: .complete(.green), subTitle: "Berhasil menambahkan produk ke keranjang")
+            AlertToast(type: .complete(.green), subTitle: isEN ? "Successfully added to cart" :"Berhasil menambahkan produk ke keranjang")
         }
         .toast(isPresenting: $showToastFailed) {
-            AlertToast(type: .error(.red), subTitle: "Stok barang tidak mencukupi")
+            AlertToast(type: .error(.red), subTitle: isEN ? "Stock is unavailable" :"Stok barang tidak mencukupi")
         }
         
         
@@ -363,6 +380,9 @@ struct ProductDetailScreen: View {
     
     struct ChipView: View {
         
+        @AppStorage("isDark") private var isDark: Bool = false
+        @AppStorage("isEN") private var isEN: Bool = false
+        
         @State var titleKey: String
         @Binding var isSelected: Bool
         @Binding var choosenVariantPrice: Int
@@ -373,12 +393,12 @@ struct ProductDetailScreen: View {
 
         var body: some View {
             HStack() {
-                Text("\(titleKey)").padding(4).font(.system(size: 14)).foregroundColor(Color(hex: "#49454F"))
+                Text("\(titleKey)").padding(4).font(.system(size: 14)).foregroundColor(isDark ? isSelected ? .black :.white :Color(hex: "#49454F"))
             }
             .padding(.vertical, 4)
             .padding(.horizontal, 8)
             .foregroundColor(isSelected ? .black : Color(hex: "#49454F"))
-            .background(isSelected ? Color(hex: "#E8DEF8") : Color.white)
+            .background(isSelected ? Color(hex: "#E8DEF8") : isDark ? .black :Color.white)
             .cornerRadius(8)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)

@@ -9,6 +9,9 @@ import SwiftUI
 
 struct NotificationScreen: View {
     
+    @AppStorage("isDark") private var isDark: Bool = false
+    @AppStorage("isEN") private var isEN: Bool = false
+    
     @Environment(\.presentationMode) var presentationMode
     @FetchRequest(sortDescriptors: []) private var notifications: FetchedResults<EntityNotif>
     @Environment(\.managedObjectContext) var viewContext
@@ -18,11 +21,14 @@ struct NotificationScreen: View {
             VStack {
                 
                 HStack {
-                    Image(uiImage: .arrowleft).padding().onTapGesture {
+                    Image(uiImage: .arrowleft)
+                        .renderingMode(isDark ? .template : .original)
+                        .foregroundColor(isDark ? .white : nil)
+                        .padding().onTapGesture {
                         self.presentationMode.wrappedValue.dismiss()
                     }
                     
-                    Text("Keranjang").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 22))
+                    Text(isEN ? "Notifications" :"Notifikasi").frame(maxWidth: .infinity, alignment: .leading).font(.system(size: 22))
                     
                 }.frame(maxWidth: .infinity, alignment: .leading)
                 
@@ -41,24 +47,24 @@ struct NotificationScreen: View {
                                 VStack {
                                     
                                     HStack {
-                                        Text("Info").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
+                                        Text("Info").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading)
                                         
-                                        Text("\(notifications[i].date!), \(notifications[i].time!)").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F"))
+                                        Text("\(notifications[i].date!), \(notifications[i].time!)").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                     }.padding(.top).padding(.trailing)
                                     
-                                    Text("Tansaksi Berhasil").font(.system(size: 14))
-                                        .foregroundColor(Color(hex: "#49454F"))
+                                    Text(isEN ? "Transaction Success" :"Tansaksi Berhasil").font(.system(size: 14))
+                                        .foregroundColor(isDark ? .white :Color(hex: "#49454F"))
                                         .fontWeight(.bold)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding(.top, -2)
                                     
-                                    Text("Transaksi anda dengan ID \(notifications[i].productId!) sedang di proses oleh penjual, mohon ditunggu untuk update selanjutnya di aplikasi. Sambil menunggu, anda bisa cari barang lain terlebih dahulu").font(.system(size: 12)).foregroundColor(Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.trailing).padding(.top, -2)
+                                    Text(isEN ? "Your transaction with ID \(notifications[i].productId!) is being process by the seller, please kindly wait for the next update. While waiting, you can looking for another items." :"Transaksi anda dengan ID \(notifications[i].productId!) sedang di proses oleh penjual, mohon ditunggu untuk update selanjutnya di aplikasi. Sambil menunggu, anda bisa cari barang lain terlebih dahulu").font(.system(size: 12)).foregroundColor(isDark ? .white :Color(hex: "#49454F")).frame(maxWidth: .infinity, alignment: .leading).padding(.trailing).padding(.top, -2)
                                     
                                     Divider()
                                 }.frame(maxWidth: .infinity, alignment: .leading)
                                 
                             }
-                            .background(notifications[i].isRead ? Color.white : Color(hex: "#EADDFF"))
+                            .background(notifications[i].isRead ? isDark ? .black :Color.white : isDark ? Color(hex: "#6750A4") :Color(hex: "#EADDFF"))
                             .padding(.bottom, -8)
                             .frame(maxWidth: .infinity)
                             .onTapGesture {
@@ -80,7 +86,7 @@ struct NotificationScreen: View {
                     VStack {
                         Image(uiImage: UIImage.errorState)
                         Text("Empty").font(.system(size: 32)).bold().padding(.bottom, 2)
-                        Text("Your requested data is unavailable").font(.system(size: 16)).foregroundColor(Color(hex: "#1D1B20"))
+                        Text("Your requested data is unavailable").font(.system(size: 16)).foregroundColor(isDark ? .white :Color(hex: "#1D1B20"))
                     }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 }
                 

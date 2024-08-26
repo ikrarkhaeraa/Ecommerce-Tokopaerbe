@@ -58,7 +58,7 @@ struct TransactionScreen: View {
                                     }
                                     
                                     ZStack {
-                                        Text(isEN ? "Done" :"Selesai").font(.system(size: 10)).fontWeight(.bold).foregroundColor(isDark ? .white :Color(hex: "#6750A4")).padding(4.0).background(Color(hex: "#EADDFF")).cornerRadius(4.0)
+                                        Text(isEN ? "Done" :"Selesai").font(.system(size: 10)).fontWeight(.bold).foregroundColor(isDark ? .black :Color(hex: "#6750A4")).padding(4.0).background(Color(hex: "#EADDFF")).cornerRadius(4.0)
                                     }
                                 }
                                 
@@ -111,7 +111,7 @@ struct TransactionScreen: View {
                             }
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.white)
+                            .background(isDark ? .black :Color.white)
                                 .cornerRadius(8)
                                 .shadow(color: .gray, radius: 2, x: 0, y: 2)
                         }.padding(.horizontal).padding(.vertical, 4)

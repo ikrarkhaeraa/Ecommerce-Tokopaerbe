@@ -36,7 +36,7 @@ struct FavoriteScreen: View {
                     Text(isEN ? "\(favorites.count) items" :"\(favorites.count) barang").foregroundColor(isDark ? .white :Color(hex: "#49454F")).font(.system(size: 16)).frame(maxWidth: .infinity, alignment: .leading)
                     
                     HStack {
-                        Divider().padding(.vertical, 6).foregroundColor(isDark ? .white : .black)
+                        Divider().padding(.vertical, 6)
                     }
                     
                     if isGrid {
