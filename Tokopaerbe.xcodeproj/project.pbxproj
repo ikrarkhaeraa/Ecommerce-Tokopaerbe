@@ -29,6 +29,8 @@
 		EF398A432C5793F700AB7795 /* splash_screen.gif in Resources */ = {isa = PBXBuildFile; fileRef = EF780E6D2C202BF30058CDEB /* splash_screen.gif */; };
 		EF3DADF22C7C5B3A004CAB9E /* KeyboardResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3DADF12C7C5B3A004CAB9E /* KeyboardResponder.swift */; };
 		EF3DADF42C7C6306004CAB9E /* GeometryGetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3DADF32C7C6306004CAB9E /* GeometryGetter.swift */; };
+		EF3DADF62C7C6EF6004CAB9E /* PaymentRemoteConfigResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3DADF52C7C6EF6004CAB9E /* PaymentRemoteConfigResponse.swift */; };
+		EF3DADF82C7C7093004CAB9E /* PaymentMethodRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3DADF72C7C7093004CAB9E /* PaymentMethodRequest.swift */; };
 		EF41D3F02C08A2C5003C65BE /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF41D3EF2C08A2C5003C65BE /* HexColor.swift */; };
 		EF4DFD352C732899003F0579 /* splash_screen_nobg.gif in Resources */ = {isa = PBXBuildFile; fileRef = EF4DFD342C732898003F0579 /* splash_screen_nobg.gif */; };
 		EF4F4CD32C189ABB00315B91 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4F4CD22C189ABB00315B91 /* HomeScreen.swift */; };
@@ -133,6 +135,8 @@
 		EF398A402C5779E700AB7795 /* EntityCart+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityCart+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		EF3DADF12C7C5B3A004CAB9E /* KeyboardResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardResponder.swift; sourceTree = "<group>"; };
 		EF3DADF32C7C6306004CAB9E /* GeometryGetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryGetter.swift; sourceTree = "<group>"; };
+		EF3DADF52C7C6EF6004CAB9E /* PaymentRemoteConfigResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRemoteConfigResponse.swift; sourceTree = "<group>"; };
+		EF3DADF72C7C7093004CAB9E /* PaymentMethodRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodRequest.swift; sourceTree = "<group>"; };
 		EF41D3EF2C08A2C5003C65BE /* HexColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexColor.swift; sourceTree = "<group>"; };
 		EF4DFD342C732898003F0579 /* splash_screen_nobg.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = splash_screen_nobg.gif; sourceTree = "<group>"; };
 		EF4F4CD22C189ABB00315B91 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
@@ -449,6 +453,7 @@
 				EFE626A02C5C8C83004E0AFA /* FulfillmentResponse.swift */,
 				EFAEE13A2C60B9F000732D43 /* RatingResponse.swift */,
 				EFAEE13C2C60C4D700732D43 /* TransactionResponse.swift */,
+				EF3DADF52C7C6EF6004CAB9E /* PaymentRemoteConfigResponse.swift */,
 			);
 			path = response;
 			sourceTree = "<group>";
@@ -467,6 +472,7 @@
 				EFE6269E2C5C8C18004E0AFA /* FulfillmentRequst.swift */,
 				EFAEE1382C60B9BC00732D43 /* RatingBody.swift */,
 				EFAEE13E2C60C5C900732D43 /* TransactionRequest.swift */,
+				EF3DADF72C7C7093004CAB9E /* PaymentMethodRequest.swift */,
 			);
 			path = request;
 			sourceTree = "<group>";
@@ -679,7 +685,9 @@
 				EF1DD7252C2AA017000A6312 /* SearchViewModel.swift in Sources */,
 				EF8D647E2C11B5480096F3EA /* RefreshBody.swift in Sources */,
 				EF08E6D22C0AA20A003B0FEF /* Log.swift in Sources */,
+				EF3DADF62C7C6EF6004CAB9E /* PaymentRemoteConfigResponse.swift in Sources */,
 				EFFBBA7D2C3F89E700A94DDE /* ProductDetailScreen.swift in Sources */,
+				EF3DADF82C7C7093004CAB9E /* PaymentMethodRequest.swift in Sources */,
 				EFE626A12C5C8C83004E0AFA /* FulfillmentResponse.swift in Sources */,
 				EFE073372C1D90A300E3706C /* SearchBar.swift in Sources */,
 				EF2D04062C62050D004000BB /* NotivicationCountView.swift in Sources */,

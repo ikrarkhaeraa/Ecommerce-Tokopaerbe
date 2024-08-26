@@ -21,6 +21,7 @@ struct Url {
         static let fulfillment = "\(Url.baseURL)/fulfillment"
         static let rating = "\(Url.baseURL)/rating"
         static let transaction = "\(Url.baseURL)/transaction"
+        static let payment = "\(Url.baseURL)/payment"
         // Add other endpoints as needed
     }
 }

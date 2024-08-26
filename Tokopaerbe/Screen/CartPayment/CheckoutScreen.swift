@@ -36,7 +36,7 @@ struct CheckoutScreen: View {
     @State private var isLoading: Bool = false
     @State private var goToPayment: Bool = false
     @State private var goToSuccessPayment: Bool = false
-    @State private var imagePayment: Image = Image(uiImage: .addCard)
+    @State private var imagePayment: String = ""
     @State private var namePayment: String = ""
     @State private var imagePaymentDefault: Image = Image(uiImage: .addCard)
     @State private var namePaymentDefault: String = "Pilih Pembayaran"
@@ -44,6 +44,7 @@ struct CheckoutScreen: View {
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     var totalPrice: Int {  checkoutCarts.filter { $0.productChecked }
         .reduce(0) { $0 + ($1.productQuantity * $1.productPrice) }}
+    @State private var saveScrollViewSize: CGFloat = .zero
     
     
     var body: some View {
@@ -132,7 +133,9 @@ struct CheckoutScreen: View {
                                 }.padding(.horizontal, 2).frame(maxWidth: .infinity, alignment: .leading)
                                 
                             }.onAppear {
-                                scrollViewSize.height += 126
+                                if namePayment.isEmpty {
+                                    scrollViewSize.height += 126
+                                }
                             }.padding()
                             
                             Divider()
@@ -141,7 +144,6 @@ struct CheckoutScreen: View {
                            
                             
                         }
-//                        .getSize {scrollViewSize = $0}
                     }
 
                 }
@@ -156,13 +158,12 @@ struct CheckoutScreen: View {
                     HStack {
                         HStack {
                             
-                            let _ = Log.d("cek Image : \(imagePayment)")
-                            if namePayment.isEmpty {
-                                imagePayment
-                                    .renderingMode(isDark ? .template : .original)
-                                    .foregroundColor(isDark ? .white : nil)
+                            if !namePayment.isEmpty {
+                                ImageLoader(contentMode:.constant("fit"), urlString: imagePayment).frame(maxWidth: 50.0, maxHeight: 20.0)
+//                                    .renderingMode(isDark ? .template : .original)
+//                                    .foregroundColor(isDark ? .white : nil)
                             } else {
-                                imagePayment
+                                imagePaymentDefault
                             }
             
                             

@@ -280,9 +280,9 @@ struct LoginActivity: View {
                 }
                 
             }
-            .keyboardHeight($keyboardHeight)
-            .animation(.easeOut(duration: 0.16))
-            .offset(y: -keyboardHeight / 2)
+//            .keyboardHeight($keyboardHeight)
+//            .animation(.easeOut(duration: 0.16))
+//            .offset(y: -keyboardHeight / 2)
 
     }
     
