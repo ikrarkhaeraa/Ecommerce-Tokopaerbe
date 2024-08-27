@@ -7,6 +7,7 @@
 
 import SwiftUI
 import LocalAuthentication
+import CoreData
 
 
 struct LoginScreen: View {
@@ -29,6 +30,11 @@ struct LoginActivity: View {
     @AppStorage("isDark") private var isDark: Bool = false
     @AppStorage("isEN") private var isEN: Bool = false
     @State var isDisableScroll: Bool = true
+    
+    @FetchRequest(sortDescriptors: []) private var favorites: FetchedResults<FavoriteEntity>
+    @FetchRequest(sortDescriptors: []) private var carts: FetchedResults<CartEntity>
+    @FetchRequest(sortDescriptors: []) private var notifications: FetchedResults<EntityNotif>
+    @Environment(\.managedObjectContext) var viewContext
     
     @State private var email: String = ""
     @State private var password: String = ""
@@ -279,6 +285,8 @@ struct LoginActivity: View {
                     EmptyView()
                 }
                 
+            }.onAppear {
+                deleteCoreDataData()
             }
 //            .keyboardHeight($keyboardHeight)
 //            .animation(.easeOut(duration: 0.16))
@@ -287,22 +295,63 @@ struct LoginActivity: View {
     }
     
     
-    func faceIdAuthentication(){
-            let context = LAContext()
-            var error: NSError?
+    func faceIdAuthentication() {
+        let context = LAContext()
+        var error: NSError?
+        
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
+            let reason = "Authenticate to access the app"
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason){ success, authenticationError in
+                if success{
+                    print("successed")
+                }else{
+                    print("failed")
+                }
+            }
+        }else{
+            // Device does not support Face ID or Touch ID
+            print("Biometric authentication unavailable")
+        }
+    }
+    
+    private func deleteCoreDataData() {
+            let fetchRequestFavorite: NSFetchRequest<FavoriteEntity> = FavoriteEntity.fetchRequest()
+            let fetchRequestCart: NSFetchRequest<CartEntity> = CartEntity.fetchRequest()
+            let fetchRequestNotif: NSFetchRequest<EntityNotif> = EntityNotif.fetchRequest()
             
-            if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
-                let reason = "Authenticate to access the app"
-                context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason){ success, authenticationError in
-                    if success{
-                        print("successed")
-                    }else{
-                        print("failed")
+
+            do {
+                
+                let favoriteCoreData = try viewContext.fetch(fetchRequestFavorite)
+                let cartCoreData = try viewContext.fetch(fetchRequestCart)
+                let notifCoreData = try viewContext.fetch(fetchRequestNotif)
+        
+                if !favoriteCoreData.isEmpty {
+                    for data in favoriteCoreData {
+                        viewContext.delete(data)
                     }
                 }
-            }else{
-                // Device does not support Face ID or Touch ID
-                print("Biometric authentication unavailable")
+                
+                if !cartCoreData.isEmpty {
+                    for data in cartCoreData {
+                        viewContext.delete(data)
+                    }
+                }
+                
+                if !notifCoreData.isEmpty {
+                    for data in notifCoreData {
+                        viewContext.delete(data)
+                    }
+                }
+            
+
+                // Save the context to persist the changes
+                try viewContext.save()
+                print("data was deleted successfully")
+
+            } catch {
+                let nsError = error as NSError
+                print("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
     
